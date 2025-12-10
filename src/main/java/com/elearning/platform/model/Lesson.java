@@ -14,7 +14,7 @@ public class Lesson {
     @Column(nullable = false, length = 200)
     private String title;
 
-    @Lob
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     @Column(name = "video_url", length = 500)

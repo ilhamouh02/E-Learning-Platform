@@ -15,7 +15,7 @@ public class Course {
     @Column(nullable = false, length = 200)
     private String title;
 
-    @Lob
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Column(length = 50)
