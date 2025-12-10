@@ -3,7 +3,7 @@
         <a id="logo-container" href="/" class="brand-logo white-text">E Learning Platform</a>
         <ul class="right hide-on-med-and-down">
             <li><a th:href="@{/courses}" class="white-text">Courses</a></li>
-            <li><a th:href="@{/tutors}" class="white-text">Tutors</a></li>
+            <li><a th:href="@{/teachers}" class="white-text">teachers</a></li>
             <!--Dropdown-->
             <li sec:authorize="isAnonymous()"><a class="dropdown-trigger" href="#" data-target="logindd">Get into</a></li>
             <li sec:authorize="isAuthenticated()"><a class="dropdown-trigger" data-target="accountdd"><i
@@ -11,7 +11,7 @@
         </ul>
         <ul id="nav-mobile" class="sidenav teal darken-2">
             <li><a th:href="@{/courses}" class="white-text">Courses</a></li>
-            <li><a th:href="@{/tutors}" class="white-text">Tutors</a></li>
+            <li><a th:href="@{/teachers}" class="white-text">teachers</a></li>
             <li sec:authorize="isAnonymous()"><a th:href="@{/login}" class="white-text">Log in</a></li>
             <li sec:authorize="isAnonymous()"><a th:href="@{/register}" class="white-text">Register</a></li>
             <li sec:authorize="isAuthenticated()"><a th:href="@{/profile}" class="white-text">Profile</a></li>

@@ -13,7 +13,7 @@
             <div class="section col s12 l6 offset-l3">
                 <form action="#" method="post"
                       th:object="${course}"
-                      th:action="@{/courses/add/{tutorId} (tutorId=${tutor.tutorId})}"
+                      th:action="@{/courses/add/{teacherId} (teacherId=${teacher.teacherId})}"
                 >
 
                     <div class="input-field">
@@ -65,7 +65,7 @@
                     <button type="submit" class="btn">
                         Confirm
                     </button>
-                    <a th:href="@{/tutors/{tutorId} (tutorId=${tutor.tutorId})}" class="btn red lighten-1">Back</a>
+                    <a th:href="@{/teachers/{teacherId} (teacherId=${teacher.teacherId})}" class="btn red lighten-1">Back</a>
 
                 </form>
             </div>

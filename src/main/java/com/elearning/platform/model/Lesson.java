@@ -1,42 +1,65 @@
 package com.elearning.platform.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
 import javax.persistence.*;
 import java.util.List;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
-@Table(name = "lesson")
+@Table(name = "lessons")
 public class Lesson {
+    
     @Id
-    @Column(name = "lessonId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long lessonId;
+    private Long id;
 
-    @Column(name = "title", nullable = false)
+    @Column(nullable = false, length = 200)
     private String title;
 
-    @Column(name = "content", columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")
     private String content;
 
-    @Column(name = "videoUrl")
+    @Column(name = "video_url", length = 500)
     private String videoUrl;
 
-    @Column(name = "orderIndex")
+    @Column(name = "order_index")
     private Integer orderIndex = 0;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "courseId", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
     @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Quiz> quizzes;
+
+    // Constructeurs
+    public Lesson() {}
+
+    public Lesson(String title, String content, String videoUrl, Integer orderIndex, Course course) {
+        this.title = title;
+        this.content = content;
+        this.videoUrl = videoUrl;
+        this.orderIndex = orderIndex != null ? orderIndex : 0;
+        this.course = course;
+    }
+
+    // Getters et Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
+
+    public String getContent() { return content; }
+    public void setContent(String content) { this.content = content; }
+
+    public String getVideoUrl() { return videoUrl; }
+    public void setVideoUrl(String videoUrl) { this.videoUrl = videoUrl; }
+
+    public Integer getOrderIndex() { return orderIndex; }
+    public void setOrderIndex(Integer orderIndex) { this.orderIndex = orderIndex; }
+
+    public Course getCourse() { return course; }
+    public void setCourse(Course course) { this.course = course; }
+
+    public List<Quiz> getQuizzes() { return quizzes; }
+    public void setQuizzes(List<Quiz> quizzes) { this.quizzes = quizzes; }
 }

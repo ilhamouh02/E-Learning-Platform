@@ -1,19 +1,42 @@
 package com.elearning.platform.dto;
 
-import com.elearning.platform.model.Tutor;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import javax.validation.constraints.NotBlank;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
 public class CourseDto {
-    private String courseName;
-    private String courseDescription;
-    private String difficulty;
-    private String detail;
-    private String url;
-    private String imgUrl;
-    private Tutor tutor;
+    
+    private Long id;
+
+    @NotBlank(message = "Le titre du cours est obligatoire")
+    private String title;
+
+    private String description;
+    private String category;
+    private Long teacherId;
+
+    // Constructeurs
+    public CourseDto() {}
+
+    public CourseDto(Long id, String title, String description, String category, Long teacherId) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.category = category;
+        this.teacherId = teacherId;
+    }
+
+    // Getters et Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
+
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
+
+    public Long getTeacherId() { return teacherId; }
+    public void setTeacherId(Long teacherId) { this.teacherId = teacherId; }
 }

@@ -1,33 +1,28 @@
 package com.elearning.platform.auth;
 
 import com.elearning.platform.model.User;
-import com.elearning.platform.model.UserRepository;
+import com.elearning.platform.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class EzLearningUserDetailsService implements UserDetailsService {
 
-    private final UserRepository userRepository;
-    private final AuthGroupRepository authGroupRepository;
-
-    public EzLearningUserDetailsService(UserRepository userRepository, AuthGroupRepository authGroupRepository) {
-        super();
-        this.userRepository = userRepository;
-        this.authGroupRepository = authGroupRepository;
-    }
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = this.userRepository.findByUsername(username);
-        if (user == null) {
-            throw new UsernameNotFoundException("UserName not found:" + username);
-        }
-        List<AuthGroup> authGroups = this.authGroupRepository.findByUsername(username);
-        return new UserPrincipal(user, authGroups);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+        
+        return org.springframework.security.core.userdetails.User
+                .withUsername(user.getEmail())
+                .password(user.getPassword())
+                .roles(user.getRole().name())
+                .build();
     }
 }

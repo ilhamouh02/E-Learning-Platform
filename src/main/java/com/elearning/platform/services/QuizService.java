@@ -3,24 +3,24 @@ package com.elearning.platform.services;
 import com.elearning.platform.dto.QuizDto;
 import com.elearning.platform.dto.QuizSubmitDto;
 import com.elearning.platform.model.*;
-import com.elearning.platform.repositories.QuizRepository;
-import com.elearning.platform.repositories.QuestionRepository;
-import com.elearning.platform.repositories.QuizAttemptRepository;
-import com.elearning.platform.repositories.LessonRepository;
+import com.elearning.platform.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
-@Transactional
 public class QuizService {
 
     @Autowired
     private QuizRepository quizRepository;
+
+    @Autowired
+    private LessonRepository lessonRepository;
 
     @Autowired
     private QuestionRepository questionRepository;
@@ -28,36 +28,31 @@ public class QuizService {
     @Autowired
     private QuizAttemptRepository quizAttemptRepository;
 
-    @Autowired
-    private LessonRepository lessonRepository;
-
-    public List<Quiz> findQuizzesByLesson(Long lessonId) {
-        return quizRepository.findByLesson_LessonId(lessonId);
-    }
-
-    public Optional<Quiz> findQuizById(Long quizId) {
-        return quizRepository.findById(quizId);
-    }
-
     public Quiz createQuiz(QuizDto quizDto) {
-        Optional<Lesson> lesson = lessonRepository.findById(quizDto.getLessonId());
-        if (!lesson.isPresent()) {
-            throw new RuntimeException("Leçon non trouvée: " + quizDto.getLessonId());
+        Optional<Lesson> lessonOpt = lessonRepository.findById(quizDto.getLessonId());
+        if (!lessonOpt.isPresent()) {
+            throw new RuntimeException("Leçon introuvable avec l'ID: " + quizDto.getLessonId());
         }
 
-        Quiz quiz = new Quiz();
-        quiz.setTitle(quizDto.getTitle());
-        quiz.setTimeLimit(quizDto.getTimeLimit());
-        quiz.setPassingScore(quizDto.getPassingScore());
-        quiz.setLesson(lesson.get());
+        Lesson lesson = lessonOpt.get();
+
+        Quiz quiz = new Quiz(
+            quizDto.getTitle(),
+            quizDto.getTimeLimit(),
+            quizDto.getPassingScore(),
+            lesson
+        );
 
         return quizRepository.save(quiz);
     }
 
-    public Quiz updateQuiz(Long quizId, QuizDto quizDto) {
-        Quiz quiz = quizRepository.findById(quizId)
-                .orElseThrow(() -> new RuntimeException("Quiz non trouvé: " + quizId));
+    public Quiz updateQuiz(Long id, QuizDto quizDto) {
+        Optional<Quiz> quizOpt = quizRepository.findById(id);
+        if (!quizOpt.isPresent()) {
+            throw new RuntimeException("Quiz introuvable avec l'ID: " + id);
+        }
 
+        Quiz quiz = quizOpt.get();
         quiz.setTitle(quizDto.getTitle());
         quiz.setTimeLimit(quizDto.getTimeLimit());
         quiz.setPassingScore(quizDto.getPassingScore());
@@ -65,68 +60,67 @@ public class QuizService {
         return quizRepository.save(quiz);
     }
 
-    public void deleteQuiz(Long quizId) {
-        quizRepository.deleteById(quizId);
+    public List<Quiz> getQuizzesByLessonId(Long lessonId) {
+        return quizRepository.findByLessonId(lessonId);
     }
 
-    public List<Question> getQuestionsForQuiz(Long quizId) {
-        return questionRepository.findByQuiz_QuizId(quizId);
+    public Optional<Quiz> getQuizById(Long id) {
+        return quizRepository.findById(id);
     }
 
-    public QuizAttempt submitQuiz(Long quizId, User user, QuizSubmitDto submitDto) {
-        Quiz quiz = quizRepository.findById(quizId)
-                .orElseThrow(() -> new RuntimeException("Quiz non trouvé: " + quizId));
+    public void deleteQuiz(Long id) {
+        quizRepository.deleteById(id);
+    }
+
+    public Map<String, Object> submitQuiz(QuizSubmitDto submitDto, User user) {
+        Optional<Quiz> quizOpt = quizRepository.findById(submitDto.getQuizId());
+        if (!quizOpt.isPresent()) {
+            throw new RuntimeException("Quiz introuvable");
+        }
+
+        Quiz quiz = quizOpt.get();
+        List<Question> questions = questionRepository.findByQuizId(quiz.getId());
 
         // Calculer le score
-        int score = calculateScore(quizId, submitDto.getAnswers());
+        int totalScore = 0;
+        int earnedScore = 0;
 
-        // Vérifier s'il existe déjà une tentative (unique par quiz/user)
-        Optional<QuizAttempt> existingAttempt = quizAttemptRepository
-                .findByQuiz_QuizIdAndUser_UserId(quizId, user.getUserId());
-
-        QuizAttempt attempt;
-        if (existingAttempt.isPresent()) {
-            attempt = existingAttempt.get();
-            attempt.setScore(score);
-            attempt.setCompletedAt(LocalDateTime.now());
-        } else {
-            attempt = new QuizAttempt();
-            attempt.setQuiz(quiz);
-            attempt.setUser(user);
-            attempt.setScore(score);
-            attempt.setCompletedAt(LocalDateTime.now());
-        }
-
-        return quizAttemptRepository.save(attempt);
-    }
-
-    private int calculateScore(Long quizId, java.util.Map<Long, String> answers) {
-        List<Question> questions = questionRepository.findByQuiz_QuizId(quizId);
-        if (questions.isEmpty()) {
-            return 0;
-        }
-
-        int totalPoints = questions.stream().mapToInt(q -> q.getPoints() != null ? q.getPoints() : 1).sum();
-        if (totalPoints == 0) {
-            return 0;
-        }
-
-        int earnedPoints = 0;
-        for (Question question : questions) {
-            String userAnswer = answers.getOrDefault(question.getQuestionId(), "");
-            if (userAnswer.equalsIgnoreCase(question.getCorrectAnswer())) {
-                earnedPoints += (question.getPoints() != null ? question.getPoints() : 1);
+        for (Question q : questions) {
+            totalScore += (q.getPoints() != null ? q.getPoints() : 1);
+            String userAnswer = submitDto.getAnswers().get(q.getId());
+            if (userAnswer != null && userAnswer.equals(q.getCorrectAnswer())) {
+                earnedScore += (q.getPoints() != null ? q.getPoints() : 1);
             }
         }
 
-        return (int) ((earnedPoints / (double) totalPoints) * 100);
+        int percentage = totalScore > 0 ? (earnedScore * 100) / totalScore : 0;
+
+        // Sauvegarder la tentative
+        QuizAttempt attempt = new QuizAttempt(quiz, user, percentage);
+        quizAttemptRepository.save(attempt);
+
+        // Retourner les résultats
+        Map<String, Object> result = new HashMap<>();
+        result.put("score", percentage);
+        result.put("passed", percentage >= quiz.getPassingScore());
+        result.put("totalQuestions", questions.size());
+        result.put("correctAnswers", earnedScore);
+
+        return result;
     }
 
-    public Optional<QuizAttempt> getAttemptForQuiz(Long quizId, Long userId) {
-        return quizAttemptRepository.findByQuiz_QuizIdAndUser_UserId(quizId, userId);
-    }
+    public Map<String, Object> getQuizResults(Long quizId) {
+        List<Question> questions = questionRepository.findByQuizId(quizId);
 
-    public List<QuizAttempt> getAttemptsByUser(Long userId) {
-        return quizAttemptRepository.findByUser_UserId(userId);
+        int totalPoints = questions.stream()
+            .mapToInt(q -> q.getPoints() != null ? q.getPoints() : 1)
+            .sum();
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("totalQuestions", questions.size());
+        result.put("totalPoints", totalPoints);
+        result.put("questions", questions);
+
+        return result;
     }
 }

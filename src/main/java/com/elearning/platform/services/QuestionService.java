@@ -7,13 +7,12 @@ import com.elearning.platform.repositories.QuestionRepository;
 import com.elearning.platform.repositories.QuizRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
-@Transactional
 public class QuestionService {
 
     @Autowired
@@ -22,32 +21,34 @@ public class QuestionService {
     @Autowired
     private QuizRepository quizRepository;
 
-    public List<Question> getQuestionsByQuiz(Long quizId) {
-        return questionRepository.findByQuiz_QuizId(quizId);
-    }
-
-    public Optional<Question> getQuestionById(Long questionId) {
-        return questionRepository.findById(questionId);
-    }
-
     public Question createQuestion(QuestionDto questionDto) {
-        Quiz quiz = quizRepository.findById(questionDto.getQuizId())
-                .orElseThrow(() -> new RuntimeException("Quiz non trouvé: " + questionDto.getQuizId()));
+        // Vérifier que le quiz existe
+        Optional<Quiz> quizOpt = quizRepository.findById(questionDto.getQuizId());
+        if (!quizOpt.isPresent()) {
+            throw new RuntimeException("Quiz introuvable avec l'ID: " + questionDto.getQuizId());
+        }
 
-        Question question = new Question();
-        question.setQuestionText(questionDto.getQuestionText());
-        question.setOptions(questionDto.getOptions());
-        question.setCorrectAnswer(questionDto.getCorrectAnswer());
-        question.setPoints(questionDto.getPoints() != null ? questionDto.getPoints() : 1);
-        question.setQuiz(quiz);
+        Quiz quiz = quizOpt.get();
+
+        // Créer la question
+        Question question = new Question(
+            questionDto.getQuestionText(),
+            questionDto.getOptions(),
+            questionDto.getCorrectAnswer(),
+            questionDto.getPoints() != null ? questionDto.getPoints() : 1,
+            quiz
+        );
 
         return questionRepository.save(question);
     }
 
-    public Question updateQuestion(Long questionId, QuestionDto questionDto) {
-        Question question = questionRepository.findById(questionId)
-                .orElseThrow(() -> new RuntimeException("Question non trouvée: " + questionId));
+    public Question updateQuestion(Long id, QuestionDto questionDto) {
+        Optional<Question> questionOpt = questionRepository.findById(id);
+        if (!questionOpt.isPresent()) {
+            throw new RuntimeException("Question introuvable avec l'ID: " + id);
+        }
 
+        Question question = questionOpt.get();
         question.setQuestionText(questionDto.getQuestionText());
         question.setOptions(questionDto.getOptions());
         question.setCorrectAnswer(questionDto.getCorrectAnswer());
@@ -56,7 +57,15 @@ public class QuestionService {
         return questionRepository.save(question);
     }
 
-    public void deleteQuestion(Long questionId) {
-        questionRepository.deleteById(questionId);
+    public List<Question> getQuestionsByQuizId(Long quizId) {
+        return questionRepository.findByQuizId(quizId);
+    }
+
+    public Optional<Question> getQuestionById(Long id) {
+        return questionRepository.findById(id);
+    }
+
+    public void deleteQuestion(Long id) {
+        questionRepository.deleteById(id);
     }
 }

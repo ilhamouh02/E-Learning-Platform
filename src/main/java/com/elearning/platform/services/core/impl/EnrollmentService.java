@@ -1,53 +1,94 @@
 package com.elearning.platform.services.core.impl;
 
-import com.elearning.platform.model.User;
-import com.elearning.platform.model.UserRepository;
+import com.elearning.platform.dto.EnrollmentDto;
 import com.elearning.platform.model.Course;
 import com.elearning.platform.model.Enrollment;
+import com.elearning.platform.model.User;
 import com.elearning.platform.repositories.CourseRepository;
 import com.elearning.platform.repositories.EnrollmentRepository;
+import com.elearning.platform.repositories.UserRepository;
+import com.elearning.platform.services.core.GenericService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Service
-public class EnrollmentService {
+public class EnrollmentService implements GenericService<EnrollmentDto, Enrollment> {
 
+    @Autowired
     private EnrollmentRepository enrollmentRepository;
-    private CourseRepository courseRepository;
+
+    @Autowired
     private UserRepository userRepository;
 
-    public EnrollmentService(EnrollmentRepository enrollmentRepository, CourseRepository courseRepository, UserRepository userRepository) {
-        this.enrollmentRepository = enrollmentRepository;
-        this.courseRepository = courseRepository;
-        this.userRepository = userRepository;
+    @Autowired
+    private CourseRepository courseRepository;
+
+    @Override
+    public Enrollment save(EnrollmentDto enrollmentDto) {
+        Optional<User> userOpt = userRepository.findById(enrollmentDto.getStudentId());
+        Optional<Course> courseOpt = courseRepository.findById(enrollmentDto.getCourseId());
+
+        if (!userOpt.isPresent() || !courseOpt.isPresent()) {
+            throw new RuntimeException("Utilisateur ou cours introuvable");
+        }
+
+        User student = userOpt.get();
+        Course course = courseOpt.get();
+
+        // Créer l'inscription
+        Enrollment enrollment = new Enrollment(student, course);
+        return enrollmentRepository.save(enrollment);
     }
 
-    public void createEnrollment(Long courseId, String username) throws Exception {
-        Course course = courseRepository.findById(courseId).get();
-        User user = userRepository.findByUsername(username);
+    @Override
+    public List<Enrollment> getAll() {
+        return enrollmentRepository.findAll();
+    }
 
-        if (user != null) {
-            // Note: user.getId() dépend de la structure de com.elearning.platform.auth.User
-            // Ajuster selon votre implémentation réelle
-            Optional<com.elearning.platform.model.Enrollment> existing = enrollmentRepository
-                    .findByStudent_UserIdAndCourse_CourseId(user.getUserId(), course.getCourseId());
-            if (existing.isPresent()) {
-                throw new Exception("You already enrolled in this course");
-            }
+    @Override
+    public Enrollment findById(Long id) {
+        // Note: Enrollment a une clé composite, cette méthode n'est pas vraiment utilisée
+        return null;
+    }
+
+    public List<Enrollment> findByStudentId(Long studentId) {
+        return enrollmentRepository.findByStudentId(studentId);
+    }
+
+    public List<Enrollment> findByCourseId(Long courseId) {
+        return enrollmentRepository.findByCourseId(courseId);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        // Non applicable pour Enrollment (clé composite)
+    }
+
+    public void deleteByStudentIdAndCourseId(Long studentId, Long courseId) {
+        enrollmentRepository.deleteByStudentIdAndCourseId(studentId, courseId);
+    }
+
+    @Override
+    public Enrollment update(EnrollmentDto enrollmentDto, Long id) {
+        // Trouver l'inscription existante
+        Optional<User> userOpt = userRepository.findById(enrollmentDto.getStudentId());
+        Optional<Course> courseOpt = courseRepository.findById(enrollmentDto.getCourseId());
+
+        if (!userOpt.isPresent() || !courseOpt.isPresent()) {
+            return null;
         }
-        LocalDate date = LocalDate.now();
-        // Note: Créer un objet Enrollment avec le constructeur mis à jour
-        Enrollment enrollment = new Enrollment();
-        enrollment.setEnrollmentDate(date);
-        enrollment.setProgress(0);
-        enrollment.setCompleted(false);
-        // link student and course
-        if (user != null) {
-            enrollment.setStudent(user);
-        }
-        enrollment.setCourse(course);
-        enrollmentRepository.save(enrollment);
+
+        User student = userOpt.get();
+        Course course = courseOpt.get();
+
+        // Créer/mettre à jour l'inscription
+        Enrollment enrollment = new Enrollment(student, course);
+        enrollment.setProgress(enrollmentDto.getProgress());
+        enrollment.setCompleted(enrollmentDto.getCompleted());
+
+        return enrollmentRepository.save(enrollment);
     }
 }

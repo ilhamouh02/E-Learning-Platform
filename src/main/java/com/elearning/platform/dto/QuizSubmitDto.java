@@ -1,27 +1,28 @@
 package com.elearning.platform.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Max;
 import java.util.Map;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class QuizSubmitDto {
-    @NotNull(message = "L'ID du quiz est obligatoire")
     private Long quizId;
-
-    @NotNull(message = "Les réponses sont obligatoires")
-    @JsonProperty("answers")
+    private Long studentId;
     private Map<Long, String> answers; // questionId -> answer
-
-    @Min(value = 0)
-    @Max(value = 100)
-    private Integer score;
+    
+    // Constructeurs
+    public QuizSubmitDto() {}
+    
+    public QuizSubmitDto(Long quizId, Long studentId, Map<Long, String> answers) {
+        this.quizId = quizId;
+        this.studentId = studentId;
+        this.answers = answers;
+    }
+    
+    // Getters et Setters
+    public Long getQuizId() { return quizId; }
+    public void setQuizId(Long quizId) { this.quizId = quizId; }
+    
+    public Long getStudentId() { return studentId; }
+    public void setStudentId(Long studentId) { this.studentId = studentId; }
+    
+    public Map<Long, String> getAnswers() { return answers; }
+    public void setAnswers(Map<Long, String> answers) { this.answers = answers; }
 }

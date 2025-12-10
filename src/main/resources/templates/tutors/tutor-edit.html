@@ -7,44 +7,44 @@
 
 <main>
     <div class="container">
-        <h3 class="center">Edit Tutor</h3>
+        <h3 class="center">Edit teacher</h3>
         <br>
         <div class="row">
             <div class="section col s12 l6 offset-l3">
                 <form action="#" method="post"
-                      th:object="${tutor}"
-                      th:action="@{/tutors/update/{tutorId} (tutorId=${tutor.tutorId})}"
+                      th:object="${teacher}"
+                      th:action="@{/teachers/update/{teacherId} (teacherId=${teacher.teacherId})}"
                 >
 
                     <div class="input-field">
-                        <label for="tutorName">Name</label>
+                        <label for="teacherName">Name</label>
                         <input type="text" class="class-controller"
-                               id="tutorName"
-                               th:field="*{tutorName}" autofocus required
+                               id="teacherName"
+                               th:field="*{teacherName}" autofocus required
                         >
                     </div>
 
                     <div class="input-field">
-                        <label for="tutorSurname">Surname</label>
+                        <label for="teacherSurname">Surname</label>
                         <input type="text" class="class-controller"
-                               id="tutorSurname"
-                               th:field="*{tutorSurname}" required
+                               id="teacherSurname"
+                               th:field="*{teacherSurname}" required
                         >
                     </div>
 
                     <div class="input-field">
-                        <label for="tutorEmail">Email</label>
+                        <label for="teacherEmail">Email</label>
                         <input type="text" class="class-controller"
-                               id="tutorEmail"
-                               th:field="*{tutorEmail}" required
+                               id="teacherEmail"
+                               th:field="*{teacherEmail}" required
                         >
                     </div>
 
                     <div class="input-field">
-                        <label for="tutorDescription">Description</label>
+                        <label for="teacherDescription">Description</label>
                         <input type="text" class="class-controller"
-                               id="tutorDescription"
-                               th:field="*{tutorDescription}" required
+                               id="teacherDescription"
+                               th:field="*{teacherDescription}" required
                         >
                     </div>
 
@@ -53,8 +53,8 @@
                         <input type="text" class="class-controller" id="imgUrl" th:field="*{imgUrl}" required>
                     </div>
 
-                    <button type="submit" class="btn">Edit Tutor</button>
-                    <a th:href="|/tutors/${tutor.tutorId}|" class="btn red lighten-1">Back</a>
+                    <button type="submit" class="btn">Edit teacher</button>
+                    <a th:href="|/teachers/${teacher.teacherId}|" class="btn red lighten-1">Back</a>
                 </form>
             </div>
         </div>

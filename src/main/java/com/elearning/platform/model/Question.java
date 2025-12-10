@@ -1,38 +1,58 @@
 package com.elearning.platform.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
 import javax.persistence.*;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
-@Table(name = "question")
+@Table(name = "questions")
 public class Question {
+    
     @Id
-    @Column(name = "questionId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long questionId;
+    private Long id;
 
-    @Column(name = "questionText", columnDefinition = "TEXT", nullable = false)
+    @Column(name = "question_text", columnDefinition = "TEXT", nullable = false)
     private String questionText;
 
-    @Column(name = "options", columnDefinition = "JSON")
-    private String options; // JSON array format
+    @Column(columnDefinition = "JSON")
+    private String options;
 
-    @Column(name = "correctAnswer", nullable = false)
+    @Column(name = "correct_answer", nullable = false)
     private String correctAnswer;
 
-    @Column(name = "points")
+    @Column
     private Integer points = 1;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "quizId", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "quiz_id", nullable = false)
     private Quiz quiz;
+
+    // Constructeurs
+    public Question() {}
+
+    public Question(String questionText, String options, String correctAnswer, Integer points, Quiz quiz) {
+        this.questionText = questionText;
+        this.options = options;
+        this.correctAnswer = correctAnswer;
+        this.points = points != null ? points : 1;
+        this.quiz = quiz;
+    }
+
+    // Getters et Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getQuestionText() { return questionText; }
+    public void setQuestionText(String questionText) { this.questionText = questionText; }
+
+    public String getOptions() { return options; }
+    public void setOptions(String options) { this.options = options; }
+
+    public String getCorrectAnswer() { return correctAnswer; }
+    public void setCorrectAnswer(String correctAnswer) { this.correctAnswer = correctAnswer; }
+
+    public Integer getPoints() { return points; }
+    public void setPoints(Integer points) { this.points = points; }
+
+    public Quiz getQuiz() { return quiz; }
+    public void setQuiz(Quiz quiz) { this.quiz = quiz; }
 }

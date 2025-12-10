@@ -90,7 +90,7 @@
                                     <a th:href="|/courses/${enrollment.course.courseId}|"><strong
                                             th:text="${enrollment.course.courseName}">courses
                                     </strong> Taught by <strong
-                                            th:text="${enrollment.course.tutor.tutorName} + ' ' + ${enrollment.course.tutor.tutorSurname}"></strong> Since <strong th:text="${enrollment.enrollmentDate}"></strong></a>
+                                            th:text="${enrollment.course.teacher.teacherName} + ' ' + ${enrollment.course.teacher.teacherSurname}"></strong> Since <strong th:text="${enrollment.enrollmentDate}"></strong></a>
                                 </div>
                             </div>
                         </div>

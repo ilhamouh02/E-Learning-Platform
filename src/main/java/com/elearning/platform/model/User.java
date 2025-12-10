@@ -1,60 +1,86 @@
 package com.elearning.platform.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.time.LocalDate;
 
 @Entity
-@Table(name = "user")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    private Long id;
 
-    @Column(unique = true, nullable = false)
-    private String username;
-
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = false, length = 100)
     private String email;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 255)
     private String password;
 
-    private String name;
-    private String surname;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private Role role = Role.STUDENT;
 
-    @Temporal(TemporalType.DATE)
-    private Date registrationDate;
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
-    private String detail;
-    private String imgUrl;
-
+    // Relations
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Course> coursesAsTeacher;
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Enrollment> enrollments;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<QuizAttempt> quizAttempts;
 
-    public User(String username, String password, String name, String surname, String email, String imgUrl, LocalDate registrationLocalDate) {
-        this.username = username;
-        this.password = password;
-        this.name = name;
-        this.surname = surname;
+    // Constructeurs
+    public User() {}
+
+    public User(String email, String password, Role role) {
         this.email = email;
-        if (registrationLocalDate != null) {
-            this.registrationDate = java.sql.Date.valueOf(registrationLocalDate);
+        this.password = password;
+        this.role = role;
+        this.createdAt = LocalDateTime.now();
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
         }
-        this.imgUrl = imgUrl;
+        if (role == null) {
+            role = Role.STUDENT;
+        }
+    }
+
+    // Getters et Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
+
+    public Role getRole() { return role; }
+    public void setRole(Role role) { this.role = role; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public List<Course> getCoursesAsTeacher() { return coursesAsTeacher; }
+    public void setCoursesAsTeacher(List<Course> coursesAsTeacher) { this.coursesAsTeacher = coursesAsTeacher; }
+
+    public List<Enrollment> getEnrollments() { return enrollments; }
+    public void setEnrollments(List<Enrollment> enrollments) { this.enrollments = enrollments; }
+
+    public List<QuizAttempt> getQuizAttempts() { return quizAttempts; }
+    public void setQuizAttempts(List<QuizAttempt> quizAttempts) { this.quizAttempts = quizAttempts; }
+
+    // Enum pour les rôles
+    public enum Role {
+        STUDENT, TEACHER, ADMIN
     }
 }

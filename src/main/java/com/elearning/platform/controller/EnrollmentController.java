@@ -1,7 +1,7 @@
 package com.elearning.platform.controller;
 
 import com.elearning.platform.model.User;
-import com.elearning.platform.model.UserRepository;
+import com.elearning.platform.repositories.UserRepository;
 import com.elearning.platform.model.Course;
 import com.elearning.platform.repositories.CourseRepository;
 import com.elearning.platform.services.core.impl.EnrollmentService;

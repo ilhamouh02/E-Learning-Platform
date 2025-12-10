@@ -14,7 +14,7 @@
             <div class="section col s12 l6 offset-l3">
                 <form action="#" method="post"
                       th:object="${course}"
-                      th:action="@{/courses/edit/{tutorId}/{courseId} (tutorId=${course.tutor.tutorId}, courseId=${course.courseId})}"
+                      th:action="@{/courses/edit/{teacherId}/{courseId} (teacherId=${course.teacher.teacherId}, courseId=${course.courseId})}"
                 >
 
                     <div class="input-field">

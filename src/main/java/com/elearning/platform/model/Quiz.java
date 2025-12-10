@@ -1,37 +1,27 @@
 package com.elearning.platform.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
 import javax.persistence.*;
 import java.util.List;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
-@Table(name = "quiz")
+@Table(name = "quizzes")
 public class Quiz {
+    
     @Id
-    @Column(name = "quizId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long quizId;
+    private Long id;
 
-    @Column(name = "title", nullable = false)
+    @Column(nullable = false, length = 200)
     private String title;
 
-    @Column(name = "timeLimit")
-    private Integer timeLimit; // en minutes
+    @Column(name = "time_limit")
+    private Integer timeLimit;
 
-    @Column(name = "passingScore")
+    @Column(name = "passing_score")
     private Integer passingScore = 70;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "lessonId", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "lesson_id")
     private Lesson lesson;
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -39,4 +29,36 @@ public class Quiz {
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<QuizAttempt> attempts;
+
+    // Constructeurs
+    public Quiz() {}
+
+    public Quiz(String title, Integer timeLimit, Integer passingScore, Lesson lesson) {
+        this.title = title;
+        this.timeLimit = timeLimit;
+        this.passingScore = passingScore != null ? passingScore : 70;
+        this.lesson = lesson;
+    }
+
+    // Getters et Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
+
+    public Integer getTimeLimit() { return timeLimit; }
+    public void setTimeLimit(Integer timeLimit) { this.timeLimit = timeLimit; }
+
+    public Integer getPassingScore() { return passingScore; }
+    public void setPassingScore(Integer passingScore) { this.passingScore = passingScore; }
+
+    public Lesson getLesson() { return lesson; }
+    public void setLesson(Lesson lesson) { this.lesson = lesson; }
+
+    public List<Question> getQuestions() { return questions; }
+    public void setQuestions(List<Question> questions) { this.questions = questions; }
+
+    public List<QuizAttempt> getAttempts() { return attempts; }
+    public void setAttempts(List<QuizAttempt> attempts) { this.attempts = attempts; }
 }

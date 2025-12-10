@@ -18,8 +18,8 @@ CREATE TABLE auth_user_group (
   UNIQUE (username, auth_group)
 );
 
-CREATE TABLE tutor (
-    tutorId BIGINT AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE teacher (
+    teacherId BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(128) NOT NULL,
     surname VARCHAR(128) NOT NULL,
     email VARCHAR(128) NOT NULL,
@@ -34,10 +34,10 @@ CREATE TABLE course (
   description VARCHAR(256) NOT NULL,
   detail VARCHAR(1024) NOT NULL ,
   difficulty VARCHAR(128) NOT NULL,
-  tutorId BIGINT NOT NULL,
+  teacherId BIGINT NOT NULL,
   url VARCHAR(1024) NOT NULL ,
   imgUrl VARCHAR(1024) NOT NULL ,
-  CONSTRAINT course_fk FOREIGN KEY(tutorId) REFERENCES tutor(tutorId)
+  CONSTRAINT course_fk FOREIGN KEY(teacherId) REFERENCES teacher(teacherId)
 );
 
 CREATE TABLE enrollment (

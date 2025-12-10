@@ -13,53 +13,53 @@
             <!-- Sidebar -->
             <div class="col s12 m4">
                 <div class="container">
-                    <img th:if="${tutor.tutorId}" class="responsive-img circle z-depth-3" th:src="${tutor.imgUrl}">
-                    <img th:unless="${tutor.tutorId}" class="responsive-img circle z-depth-3" src="/img/instructors/instructor-stock.png">
+                    <img th:if="${teacher.teacherId}" class="responsive-img circle z-depth-3" th:src="${teacher.imgUrl}">
+                    <img th:unless="${teacher.teacherId}" class="responsive-img circle z-depth-3" src="/img/instructors/instructor-stock.png">
                 </div>
                 <ul class="collapsible z-depth-3 mt-3">
                     <li>
                         <div class="collapsible-header"><i class="material-icons">assignment_ind
                         </i><span>Speciality</span></div>
-                        <div class="collapsible-body"><span th:text="${tutor.tutorDescription}">Tutor Description</span></div>
+                        <div class="collapsible-body"><span th:text="${teacher.teacherDescription}">teacher Description</span></div>
                     </li>
                     <li>
                         <div class="collapsible-header"><i class="material-icons">drafts</i>Email</div>
-                        <div class="collapsible-body"><span th:text="${tutor.tutorEmail}">Tutor Email</span></div>
+                        <div class="collapsible-body"><span th:text="${teacher.teacherEmail}">teacher Email</span></div>
                     </li>
                 </ul>
             </div>
-            <!-- Tutor Details -->
+            <!-- teacher Details -->
             <div class="col s12 m8">
                 <div class="card z-depth-3">
                     <div class="card-content teal lighten-2 white-text">
                         <span class="card-title"><strong
-                                th:text="${tutor.tutorName} + ' ' + ${tutor.tutorSurname}"></strong>
+                                th:text="${teacher.teacherName} + ' ' + ${teacher.teacherSurname}"></strong>
                         <span sec:authorize="hasRole('ROLE_ADMIN')">
-                                    <a th:href="@{/tutors/edit/{tutorId}
-                                    (tutorId=${tutor.tutorId})}"
+                                    <a th:href="@{/teachers/edit/{teacherId}
+                                    (teacherId=${teacher.teacherId})}"
                                        class="btn-floating waves-effect waves-light btn-small yellow darken-1"><i
                                             class="material-icons">edit</i>
                                     </a>
                                     </span>
                         </span>
-                        <p th:if="${tutor.tutorDetail}">
-                            <span th:text="${tutor.tutorDetail}">Detail</span>
+                        <p th:if="${teacher.teacherDetail}">
+                            <span th:text="${teacher.teacherDetail}">Detail</span>
                             <a sec:authorize="hasRole('ROLE_ADMIN')" class="btn-floating btn-small red lighten-1 waves-effect waves-light modal-trigger" href="#modal-detail"><i class="material-icons">edit</i></a>
                         </p>
                         <!-- Modal Trigger -->
-                        <p th:unless="${tutor.tutorDetail}">
+                        <p th:unless="${teacher.teacherDetail}">
                             <a class="btn-floating btn-small red lighten-1 modal-trigger waves-effect waves-light" href="#modal-detail"><i class="material-icons">add</i></a>
                         </p>
                     </div>
                     <!-- Modal Structure -->
                     <div id="modal-detail" class="modal">
-                        <form th:action="@{/tutors/patch/{tutorId} (tutorId=${tutor.tutorId})}" th:object="${tutor}" method="post">
+                        <form th:action="@{/teachers/patch/{teacherId} (teacherId=${teacher.teacherId})}" th:object="${teacher}" method="post">
 
                         <div class="modal-content">
                             <h4 class="teal-text">Tell us about yourself</h4>
                             <div class="input-field">
-                                <label for="detail-tutor">Detail</label>
-                                <textarea th:field="*{tutorDetail}" id="detail-tutor" class="materialize-textarea"></textarea>
+                                <label for="detail-teacher">Detail</label>
+                                <textarea th:field="*{teacherDetail}" id="detail-teacher" class="materialize-textarea"></textarea>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -72,7 +72,7 @@
                     <div class="card-action">
                         <!-- courses -->
                         <h5 class="teal-text mb-4">courses <span sec:authorize="hasRole('ROLE_ADMIN')">
-                            <a th:href="@{/courses/add/{tutorId} (tutorId=${tutor.tutorId})}" class="btn-floating btn-small waves-effect waves-light lighten-1"><i class="material-icons">add</i></a>
+                            <a th:href="@{/courses/add/{teacherId} (teacherId=${teacher.teacherId})}" class="btn-floating btn-small waves-effect waves-light lighten-1"><i class="material-icons">add</i></a>
                         </span>
                         </h5>
                         <div class="mb-3" th:each="course:${courses}">

@@ -3,17 +3,15 @@ package com.elearning.platform.services;
 import com.elearning.platform.dto.LessonDto;
 import com.elearning.platform.model.Course;
 import com.elearning.platform.model.Lesson;
-import com.elearning.platform.repositories.LessonRepository;
 import com.elearning.platform.repositories.CourseRepository;
+import com.elearning.platform.repositories.LessonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
 public class LessonService {
 
     @Autowired
@@ -22,41 +20,50 @@ public class LessonService {
     @Autowired
     private CourseRepository courseRepository;
 
-    public List<Lesson> getLessonsByCourse(Long courseId) {
-        return lessonRepository.findByCourse_CourseIdOrderByOrderIndexAsc(courseId);
-    }
-
-    public Optional<Lesson> getLessonById(Long lessonId) {
-        return lessonRepository.findById(lessonId);
-    }
-
     public Lesson createLesson(LessonDto lessonDto) {
-        Course course = courseRepository.findById(lessonDto.getCourseId())
-                .orElseThrow(() -> new RuntimeException("Cours non trouvé: " + lessonDto.getCourseId()));
+        // Vérifier que le cours existe
+        Optional<Course> courseOpt = courseRepository.findById(lessonDto.getCourseId());
+        if (!courseOpt.isPresent()) {
+            throw new RuntimeException("Cours introuvable avec l'ID: " + lessonDto.getCourseId());
+        }
 
-        Lesson lesson = new Lesson();
-        lesson.setTitle(lessonDto.getTitle());
-        lesson.setContent(lessonDto.getContent());
-        lesson.setVideoUrl(lessonDto.getVideoUrl());
-        lesson.setOrderIndex(lessonDto.getOrderIndex() != null ? lessonDto.getOrderIndex() : 0);
-        lesson.setCourse(course);
+        Course course = courseOpt.get();
 
-        return lessonRepository.save(lesson);
-    }
-
-    public Lesson updateLesson(Long lessonId, LessonDto lessonDto) {
-        Lesson lesson = lessonRepository.findById(lessonId)
-                .orElseThrow(() -> new RuntimeException("Leçon non trouvée: " + lessonId));
-
-        lesson.setTitle(lessonDto.getTitle());
-        lesson.setContent(lessonDto.getContent());
-        lesson.setVideoUrl(lessonDto.getVideoUrl());
-        lesson.setOrderIndex(lessonDto.getOrderIndex());
+        // Créer la leçon
+        Lesson lesson = new Lesson(
+            lessonDto.getTitle(),
+            lessonDto.getContent(),
+            lessonDto.getVideoUrl(),
+            lessonDto.getOrderIndex() != null ? lessonDto.getOrderIndex() : 0,
+            course
+        );
 
         return lessonRepository.save(lesson);
     }
 
-    public void deleteLesson(Long lessonId) {
-        lessonRepository.deleteById(lessonId);
+    public Lesson updateLesson(Long id, LessonDto lessonDto) {
+        Optional<Lesson> lessonOpt = lessonRepository.findById(id);
+        if (!lessonOpt.isPresent()) {
+            throw new RuntimeException("Leçon introuvable avec l'ID: " + id);
+        }
+
+        Lesson lesson = lessonOpt.get();
+        lesson.setTitle(lessonDto.getTitle());
+        lesson.setContent(lessonDto.getContent());
+        lesson.setVideoUrl(lessonDto.getVideoUrl());
+
+        return lessonRepository.save(lesson);
+    }
+
+    public List<Lesson> getLessonsByCourseId(Long courseId) {
+        return lessonRepository.findByCourseId(courseId);
+    }
+
+    public Optional<Lesson> getLessonById(Long id) {
+        return lessonRepository.findById(id);
+    }
+
+    public void deleteLesson(Long id) {
+        lessonRepository.deleteById(id);
     }
 }

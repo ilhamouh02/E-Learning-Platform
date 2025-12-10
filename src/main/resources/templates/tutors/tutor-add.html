@@ -7,19 +7,19 @@
 
 <main>
     <div class="container">
-        <h3 class="center">New Tutor</h3>
+        <h3 class="center">New teacher</h3>
         <br>
         <div class="row">
             <div class="section col s12 l6 offset-l3">
                 <form action="#" method="post"
-                      th:object="${tutor}"
-                      th:action="@{/tutors/save}"
+                      th:object="${teacher}"
+                      th:action="@{/teachers/save}"
                 >
 
                     <div class="input-field">
-                        <label for="tutorName">Name</label>
+                        <label for="teacherName">Name</label>
                         <input type="text" class="class-controller"
-                               id="tutorName"
+                               id="teacherName"
                                th:field="*{name}" autofocus required
                         >
                     </div>
@@ -56,7 +56,7 @@
                     <button type="submit" class="btn">
                         Confirm
                     </button>
-                    <a th:href="@{/tutors}" class="btn red lighten-1">Back</a>
+                    <a th:href="@{/teachers}" class="btn red lighten-1">Back</a>
 
                 </form>
             </div>

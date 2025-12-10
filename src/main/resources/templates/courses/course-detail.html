@@ -29,16 +29,16 @@
                         <div class="collapsible-body"><span th:text="${course.courseDifficulty}">Course Difficulty</span></div>
                     </li>
                     <li>
-                        <div class="collapsible-header"><i class="material-icons">assignment_ind</i>Tutor</div>
+                        <div class="collapsible-header"><i class="material-icons">assignment_ind</i>teacher</div>
                         <div class="collapsible-body">
-                            <a th:href="@{/tutors/{tutorId}(tutorId=${course.tutor.tutorId})}">
+                            <a th:href="@{/teachers/{teacherId}(teacherId=${course.teacher.teacherId})}">
                                 <div class="row">
-                                <img th:src="${course.tutor.imgUrl}"
+                                <img th:src="${course.teacher.imgUrl}"
                                      class="col s4 m12 circle responsive-img"
                                      alt="instructor image"/>
                                 <div class="col s8 m12 teal-text mt-3 center-align">
                                 <strong
-                                    th:text="${course.tutor.tutorName} + ' ' + ${course.tutor.tutorSurname}">Tutor Date</strong>
+                                    th:text="${course.teacher.teacherName} + ' ' + ${course.teacher.teacherSurname}">teacher Date</strong>
                                 </div>
                                 </div>
                             </a>
@@ -87,7 +87,7 @@
                     <p>You are one step away from starting a new journey towards excellence.
                         Do you want to enroll in the course of <strong th:text="${course.courseName}">course name</strong>,
                         taught by <strong
-                                th:text="${course.tutor.tutorName} + ' ' + ${course.tutor.tutorSurname}">tutor
+                                th:text="${course.teacher.teacherName} + ' ' + ${course.teacher.teacherSurname}">teacher
                         </strong>?</p>
                 </div>
                 <div class="modal-footer">

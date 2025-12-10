@@ -1,67 +1,98 @@
 package com.elearning.platform.services.core.impl;
 
-import com.elearning.platform.auth.AuthGroup;
-import com.elearning.platform.auth.AuthGroupRepository;
-import com.elearning.platform.model.User;
-import com.elearning.platform.model.UserRepository;
 import com.elearning.platform.dto.UserDto;
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import com.elearning.platform.model.User;
+import com.elearning.platform.repositories.UserRepository;
+import com.elearning.platform.services.core.GenericService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
-@Slf4j
-@AllArgsConstructor
-public class UserService {
+public class UserService implements GenericService<UserDto> {
 
-    private final UserRepository userRepository;
-    private final AuthGroupRepository authGroupRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-    public void createUser(UserDto userDto) throws IllegalStateException {
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
-        if (null != userRepository.findByUsername(userDto.getUsername())) {
-            throw new IllegalStateException("There is already a userName with name " + userDto.getUsername());
-        } else if (null != userRepository.findByEmail(userDto.getEmail())) {
-            throw new IllegalStateException("There is already a userName with the email " + userDto.getEmail());
+    @Override
+    public UserDto save(UserDto userDto) {
+        // Vérifier si l'email existe déjà
+        if (userRepository.findByEmail(userDto.getEmail()).isPresent()) {
+            throw new RuntimeException("Email déjà utilisé");
         }
-        String username = userDto.getUsername();
-        String password = new BCryptPasswordEncoder(11).encode(userDto.getPassword());
-        String name = userDto.getName();
-        String surname = userDto.getSurname();
-        String email = userDto.getEmail();
-        log.info("Getting image");
-        log.info("about to upload");
-        String imgUrl = userDto.getImgUrl();
-        LocalDate date = LocalDate.now();
-        User user = new User(username, password, name, surname, email, imgUrl, date);
-        AuthGroup group = new AuthGroup();
 
-        group.setUsername(userDto.getUsername());
-        group.setAuthgroup("USER");
+        // Créer un nouvel utilisateur
+        User user = new User();
+        user.setEmail(userDto.getEmail());
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        
+        // Définir le rôle (par défaut STUDENT)
+        User.Role role = User.Role.STUDENT;
+        if (userDto.getRole() != null) {
+            try {
+                role = User.Role.valueOf(userDto.getRole().toUpperCase());
+            } catch (IllegalArgumentException e) {
+                role = User.Role.STUDENT;
+            }
+        }
+        user.setRole(role);
 
-        userRepository.save(user);
-        authGroupRepository.save(group);
+        user = userRepository.save(user);
+        return new UserDto(user);
     }
 
-    public void update(User user) {
-        User current = userRepository.findByUsername(user.getUsername());
-
-        current.setName(user.getName());
-        current.setSurname(user.getSurname());
-        current.setEmail(user.getEmail());
-        current.setImgUrl(user.getImgUrl());
-
-        userRepository.save(current);
+    @Override
+    public List<UserDto> getAll() {
+        return userRepository.findAll().stream()
+                .map(UserDto::new)
+                .collect(Collectors.toList());
     }
 
-    public void patch(User user) {
-        User current = userRepository.findByUsername(user.getUsername());
+    @Override
+    public UserDto findById(Long id) {
+        Optional<User> user = userRepository.findById(id);
+        return user.map(UserDto::new).orElse(null);
+    }
 
-        current.setDetail(user.getDetail());
+    public UserDto findByEmail(String email) {
+        Optional<User> user = userRepository.findByEmail(email);
+        return user.map(UserDto::new).orElse(null);
+    }
 
-        userRepository.save(current);
+    @Override
+    public void deleteById(Long id) {
+        userRepository.deleteById(id);
+    }
+
+    @Override
+    public UserDto update(UserDto userDto, Long id) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            user.setEmail(userDto.getEmail());
+            
+            if (userDto.getPassword() != null && !userDto.getPassword().isEmpty()) {
+                user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+            }
+            
+            if (userDto.getRole() != null) {
+                try {
+                    user.setRole(User.Role.valueOf(userDto.getRole().toUpperCase()));
+                } catch (IllegalArgumentException e) {
+                    // Garder le rôle actuel si invalide
+                }
+            }
+            
+            user = userRepository.save(user);
+            return new UserDto(user);
+        }
+        return null;
     }
 }
