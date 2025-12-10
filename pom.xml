@@ -57,6 +57,12 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- Flyway Migration -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
+
         <!-- LOMBOK VERSION COMPATIBLE Java 11 + Spring Boot 2 -->
         <dependency>
             <groupId>org.projectlombok</groupId>

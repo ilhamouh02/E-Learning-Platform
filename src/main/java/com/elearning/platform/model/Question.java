@@ -10,10 +10,11 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "question_text", columnDefinition = "TEXT", nullable = false)
+    @Lob
+    @Column(name = "question_text", nullable = false)
     private String questionText;
 
-    @Column(columnDefinition = "JSON")
+    @Lob
     private String options;
 
     @Column(name = "correct_answer", nullable = false)
