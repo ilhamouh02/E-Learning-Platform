@@ -10,10 +10,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
-public class UserService implements GenericService<UserDto> {
+public class UserService implements GenericService<UserDto, User> {
 
     @Autowired
     private UserRepository userRepository;
@@ -22,18 +21,15 @@ public class UserService implements GenericService<UserDto> {
     private BCryptPasswordEncoder passwordEncoder;
 
     @Override
-    public UserDto save(UserDto userDto) {
-        // Vérifier si l'email existe déjà
+    public User save(UserDto userDto) {
         if (userRepository.findByEmail(userDto.getEmail()).isPresent()) {
             throw new RuntimeException("Email déjà utilisé");
         }
 
-        // Créer un nouvel utilisateur
         User user = new User();
         user.setEmail(userDto.getEmail());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         
-        // Définir le rôle (par défaut STUDENT)
         User.Role role = User.Role.STUDENT;
         if (userDto.getRole() != null) {
             try {
@@ -44,26 +40,17 @@ public class UserService implements GenericService<UserDto> {
         }
         user.setRole(role);
 
-        user = userRepository.save(user);
-        return new UserDto(user);
+        return userRepository.save(user);
     }
 
     @Override
-    public List<UserDto> getAll() {
-        return userRepository.findAll().stream()
-                .map(UserDto::new)
-                .collect(Collectors.toList());
+    public List<User> getAll() {
+        return userRepository.findAll();
     }
 
     @Override
-    public UserDto findById(Long id) {
-        Optional<User> user = userRepository.findById(id);
-        return user.map(UserDto::new).orElse(null);
-    }
-
-    public UserDto findByEmail(String email) {
-        Optional<User> user = userRepository.findByEmail(email);
-        return user.map(UserDto::new).orElse(null);
+    public User findById(Long id) {
+        return userRepository.findById(id).orElse(null);
     }
 
     @Override
@@ -72,7 +59,7 @@ public class UserService implements GenericService<UserDto> {
     }
 
     @Override
-    public UserDto update(UserDto userDto, Long id) {
+    public User update(UserDto userDto, Long id) {
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
@@ -86,12 +73,11 @@ public class UserService implements GenericService<UserDto> {
                 try {
                     user.setRole(User.Role.valueOf(userDto.getRole().toUpperCase()));
                 } catch (IllegalArgumentException e) {
-                    // Garder le rôle actuel si invalide
+                    // Garder le rôle actuel
                 }
             }
             
-            user = userRepository.save(user);
-            return new UserDto(user);
+            return userRepository.save(user);
         }
         return null;
     }
