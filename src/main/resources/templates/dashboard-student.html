@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="fragments/head"></head>
+<body>
+<header th:insert="fragments/header"></header>
+
+<main class="container mt-5">
+    <h1 class="display-4 mb-4">Mon Tableau de Bord</h1>
+
+    <!-- Cours en cours -->
+    <h2>Mes Cours</h2>
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+        <!-- Carte de cours (Exemple) -->
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Introduction à React</h5>
+                    <p class="card-text">Vous avez terminé 3 leçons sur 10.</p>
+                    <div class="progress mb-2">
+                        <div class="progress-bar" role="progressbar" style="width: 30%;" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100">30%</div>
+                    </div>
+                    <a href="#" class="btn btn-primary">Continuer le cours</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Autre carte de cours (Exemple) -->
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Maîtriser Spring Boot</h5>
+                    <p class="card-text">Vous avez terminé 8 leçons sur 12.</p>
+                    <div class="progress mb-2">
+                        <div class="progress-bar" role="progressbar" style="width: 66%;" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100">66%</div>
+                    </div>
+                    <a href="#" class="btn btn-primary">Continuer le cours</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Prochains Quiz -->
+    <h2 class="mt-5">Prochains Quiz à Passer</h2>
+    <div class="list-group">
+        <a href="#" class="list-group-item list-group-item-action">
+            Quiz : Les composants React - <strong>À faire avant le 15/12</strong>
+        </a>
+        <a href="#" class="list-group-item list-group-item-action">
+            Quiz : Les bases de Spring Security - <strong>À faire avant le 18/12</strong>
+        </a>
+    </div>
+</main>
+
+<footer class="text-center py-3 mt-5 bg-light" th:insert="fragments/footer"></footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>

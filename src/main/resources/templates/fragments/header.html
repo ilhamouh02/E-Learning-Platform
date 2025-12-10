@@ -1,32 +1,39 @@
-<nav class="teal lighten-2" role="navigation">
-    <div class="nav-wrapper container">
-        <a id="logo-container" href="/" class="brand-logo white-text">E Learning Platform</a>
-        <ul class="right hide-on-med-and-down">
-            <li><a th:href="@{/courses}" class="white-text">Courses</a></li>
-            <li><a th:href="@{/teachers}" class="white-text">teachers</a></li>
-            <!--Dropdown-->
-            <li sec:authorize="isAnonymous()"><a class="dropdown-trigger" href="#" data-target="logindd">Get into</a></li>
-            <li sec:authorize="isAuthenticated()"><a class="dropdown-trigger" data-target="accountdd"><i
-                    class="material-icons">account_circle</i></a></li>
-        </ul>
-        <ul id="nav-mobile" class="sidenav teal darken-2">
-            <li><a th:href="@{/courses}" class="white-text">Courses</a></li>
-            <li><a th:href="@{/teachers}" class="white-text">teachers</a></li>
-            <li sec:authorize="isAnonymous()"><a th:href="@{/login}" class="white-text">Log in</a></li>
-            <li sec:authorize="isAnonymous()"><a th:href="@{/register}" class="white-text">Register</a></li>
-            <li sec:authorize="isAuthenticated()"><a th:href="@{/profile}" class="white-text">Profile</a></li>
-            <li sec:authorize="isAuthenticated()"><a th:href="@{/logout}" class="white-text">Log out</a></li>
-        </ul>
-        <a href="#" data-target="nav-mobile" class="sidenav-trigger white-text"><i
-                class="material-icons">menu</i></a>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">E-Learning Platform</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/discover}">Catalogue</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/courses}">Mes Cours</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <!-- Liens pour les utilisateurs non authentifiés -->
+                <li class="nav-item" sec:authorize="isAnonymous()">
+                    <a class="nav-link" th:href="@{/login}">Connexion</a>
+                </li>
+                <li class="nav-item" sec:authorize="isAnonymous()">
+                    <a class="btn btn-light" th:href="@{/register}">Inscription</a>
+                </li>
+
+                <!-- Menu déroulant pour les utilisateurs authentifiés -->
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-user-circle"></i> Mon Compte
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" th:href="@{/profile}">Mon Profil</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" th:href="@{/logout}">Déconnexion</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
     </div>
 </nav>
-<!-- Dropdown Content -->
-<ul id="accountdd" class="dropdown-content">
-    <li sec:authorize="isAuthenticated()"><a th:href="@{/profile}">Profile</a></li>
-    <li sec:authorize="isAuthenticated()"><a th:href="@{/logout}">Log out</a></li>
-</ul>
-<ul id="logindd" class="dropdown-content">
-    <li><a th:href="@{/login}">Log in</a></li>
-    <li><a th:href="@{/register}">Register</a></li>
-</ul>
