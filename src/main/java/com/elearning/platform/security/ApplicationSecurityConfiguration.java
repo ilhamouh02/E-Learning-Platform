@@ -31,14 +31,16 @@ public class ApplicationSecurityConfiguration {
     @Autowired
     private JwtAuthFilter jwtAuthFilter;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
         return http.getSharedObject(AuthenticationManagerBuilder.class)
             .userDetailsService(userDetailsService)
-            .passwordEncoder(passwordEncoder)
+            .passwordEncoder(passwordEncoder())
             .and()
             .build();
     }
