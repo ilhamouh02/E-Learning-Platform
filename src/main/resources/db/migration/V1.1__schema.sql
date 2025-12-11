@@ -1,50 +1,28 @@
-CREATE TABLE user (
-  userId BIGINT AUTO_INCREMENT PRIMARY KEY,
-  username VARCHAR(128) NOT NULL UNIQUE,
-  password VARCHAR(256) NOT NULL,
-  name VARCHAR(128) NOT NULL,
-  surname VARCHAR(128) NOT NULL,
-  email VARCHAR(128) NOT NULL UNIQUE,
-  registration_date DATE NOT NULL,
-  detail VARCHAR(1024),
-  imgUrl VARCHAR(1024) NOT NULL
+CREATE TABLE users (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  email VARCHAR(100) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  role ENUM('STUDENT', 'TEACHER', 'ADMIN') DEFAULT 'STUDENT',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE auth_user_group (
-  auth_user_group_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-  username VARCHAR(128) NOT NULL,
-  auth_group VARCHAR(128) NOT NULL,
-  CONSTRAINT user_auth_user_group_fk FOREIGN KEY(username) REFERENCES user(username),
-  UNIQUE (username, auth_group)
+CREATE TABLE courses (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(200) NOT NULL,
+  description TEXT,
+  category VARCHAR(50),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  teacher_id BIGINT,
+  FOREIGN KEY (teacher_id) REFERENCES users(id) ON DELETE SET NULL
 );
 
-CREATE TABLE teacher (
-    teacherId BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(128) NOT NULL,
-    surname VARCHAR(128) NOT NULL,
-    email VARCHAR(128) NOT NULL,
-    description VARCHAR(256) NOT NULL,
-    detail VARCHAR(1024),
-    imgUrl VARCHAR(1024) NOT NULL
-);
-
-CREATE TABLE course (
-  courseId BIGINT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(128) NOT NULL UNIQUE,
-  description VARCHAR(256) NOT NULL,
-  detail VARCHAR(1024) NOT NULL ,
-  difficulty VARCHAR(128) NOT NULL,
-  teacherId BIGINT NOT NULL,
-  url VARCHAR(1024) NOT NULL ,
-  imgUrl VARCHAR(1024) NOT NULL ,
-  CONSTRAINT course_fk FOREIGN KEY(teacherId) REFERENCES teacher(teacherId)
-);
-
-CREATE TABLE enrollment (
-    enrollmentId BIGINT AUTO_INCREMENT PRIMARY KEY,
-    userId BIGINT NOT NULL,
-    courseId BIGINT NOT NULL,
-    date DATE NOT NULL,
-    CONSTRAINT enrollment_user_fk FOREIGN KEY(userId) REFERENCES user(userId),
-    CONSTRAINT enrollment_course_fk FOREIGN KEY(courseId) REFERENCES course(courseId)
+CREATE TABLE enrollments (
+  student_id BIGINT NOT NULL,
+  course_id BIGINT NOT NULL,
+  enrolled_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  progress INT DEFAULT 0,
+  completed BOOLEAN DEFAULT FALSE,
+  PRIMARY KEY (student_id, course_id),
+  FOREIGN KEY (student_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
 );
