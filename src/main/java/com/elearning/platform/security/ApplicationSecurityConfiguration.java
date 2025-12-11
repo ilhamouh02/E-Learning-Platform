@@ -51,6 +51,7 @@ public class ApplicationSecurityConfiguration {
         http
             .csrf().disable()
             .authorizeRequests()
+            .antMatchers("/css/**", "/js/**", "/img/**", "/favicon.ico").permitAll()
             .anyRequest().authenticated()
             .and()
             .sessionManagement()
