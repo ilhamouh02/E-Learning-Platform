@@ -12,15 +12,9 @@
         <br>
         <div class="row">
             <div class="section col s12 m6 l4 offset-m3 offset-l4">
-                <form method="post"
-                      th:action="@{/login}"
-                >
-                    <div th:if="${param.error}">
-                        <h5 class="center red-text text-lighten-1">Invalid username or password</h5>
-                    </div>
-                    <br>
+                <form id="login-form">
                     <div class="input-field">
-                        <label for="username">UserName</label>
+                        <label for="username">Email</label>
                         <input type="text" class="class-controller"
                                id="username" name="username" autofocus
                         >
@@ -55,5 +49,6 @@
 <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script src="/js/materialize.js"></script>
 <script src="/js/init.js"></script>
+<script src="/js/auth.js"></script>
 </body>
 </html>

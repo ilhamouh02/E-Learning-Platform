@@ -7,8 +7,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest
-@TestPropertySource(properties = {"jwt.secret=test-secret"})
-@ContextConfiguration(classes = {PasswordConfiguration.class})
 class PlatformApplicationTests {
 
     @Test
