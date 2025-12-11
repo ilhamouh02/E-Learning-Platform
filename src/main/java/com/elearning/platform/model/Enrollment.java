@@ -3,6 +3,7 @@ package com.elearning.platform.model;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "enrollments")
@@ -86,4 +87,18 @@ class EnrollmentId implements Serializable {
 
     public Long getCourse() { return course; }
     public void setCourse(Long course) { this.course = course; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EnrollmentId that = (EnrollmentId) o;
+        return Objects.equals(student, that.student) &&
+               Objects.equals(course, that.course);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(student, course);
+    }
 }
