@@ -6,6 +6,7 @@ import com.elearning.platform.services.LessonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -36,12 +37,14 @@ public class LessonController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<Lesson> createLesson(@Valid @RequestBody LessonDto lessonDto) {
         Lesson lesson = lessonService.createLesson(lessonDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(lesson);
     }
 
     @PutMapping("/{lessonId}")
+    @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<Lesson> updateLesson(
             @PathVariable Long lessonId,
             @Valid @RequestBody LessonDto lessonDto) {
@@ -50,6 +53,7 @@ public class LessonController {
     }
 
     @DeleteMapping("/{lessonId}")
+    @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<Void> deleteLesson(@PathVariable Long lessonId) {
         lessonService.deleteLesson(lessonId);
         return ResponseEntity.noContent().build();

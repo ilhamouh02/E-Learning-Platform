@@ -6,6 +6,7 @@ import com.elearning.platform.services.core.impl.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -20,8 +21,10 @@ public class CourseController {
     private CourseService courseService;
 
     @GetMapping
-    public ResponseEntity<List<Course>> getAllCourses() {
-        List<Course> courses = courseService.getAll();
+    public ResponseEntity<List<Course>> getAllCourses(
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) Long teacherId) {
+        List<Course> courses = courseService.search(category, teacherId);
         return ResponseEntity.ok(courses);
     }
 
@@ -35,12 +38,14 @@ public class CourseController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<Course> createCourse(@Valid @RequestBody CourseDto courseDto) {
         Course course = courseService.save(courseDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(course);
     }
 
     @PutMapping("/{courseId}")
+    @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<Course> updateCourse(
             @PathVariable Long courseId,
             @Valid @RequestBody CourseDto courseDto) {
@@ -52,6 +57,7 @@ public class CourseController {
     }
 
     @DeleteMapping("/{courseId}")
+    @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
     public ResponseEntity<Void> deleteCourse(@PathVariable Long courseId) {
         courseService.deleteById(courseId);
         return ResponseEntity.noContent().build();

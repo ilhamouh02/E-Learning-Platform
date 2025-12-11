@@ -10,6 +10,7 @@ import com.elearning.platform.services.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,34 +53,37 @@ public class QuizController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<Quiz> createQuiz(@Valid @RequestBody QuizDto quizDto) {
         Quiz quiz = quizService.createQuiz(quizDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(quiz);
     }
 
     @PutMapping("/{quizId}")
+    @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<Quiz> updateQuiz(@PathVariable Long quizId, @Valid @RequestBody QuizDto quizDto) {
         Quiz updatedQuiz = quizService.updateQuiz(quizId, quizDto);
         return ResponseEntity.ok(updatedQuiz);
     }
 
     @DeleteMapping("/{quizId}")
+    @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<Void> deleteQuiz(@PathVariable Long quizId) {
         quizService.deleteQuiz(quizId);
         return ResponseEntity.noContent().build();
     }
 
+    @Autowired
+    private com.elearning.platform.services.core.impl.UserService userService;
+
     @PostMapping("/{quizId}/submit")
     public ResponseEntity<?> submitQuiz(
             @PathVariable Long quizId,
             @Valid @RequestBody QuizSubmitDto submitDto,
-            Authentication authentication) {
+            java.security.Principal principal) {
         
         try {
-            // Pour l'instant, créer un user fictif pour les tests
-            User user = new User();
-            user.setId(1L); // ID fictif
-            
+            User user = userService.findByEmail(principal.getName());
             Map<String, Object> result = quizService.submitQuiz(submitDto, user);
             return ResponseEntity.ok(result);
         } catch (Exception e) {

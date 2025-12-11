@@ -6,6 +6,7 @@ import com.elearning.platform.services.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -36,12 +37,14 @@ public class QuestionController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<Question> createQuestion(@Valid @RequestBody QuestionDto questionDto) {
         Question question = questionService.createQuestion(questionDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(question);
     }
 
     @PutMapping("/{questionId}")
+    @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<Question> updateQuestion(
             @PathVariable Long questionId,
             @Valid @RequestBody QuestionDto questionDto) {
@@ -50,6 +53,7 @@ public class QuestionController {
     }
 
     @DeleteMapping("/{questionId}")
+    @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<Void> deleteQuestion(@PathVariable Long questionId) {
         questionService.deleteQuestion(questionId);
         return ResponseEntity.noContent().build();

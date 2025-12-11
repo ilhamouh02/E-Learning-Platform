@@ -1,16 +1,18 @@
 package com.elearning.platform;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import com.elearning.platform.security.PasswordConfiguration;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
-public class PlatformApplicationTests {
+@TestPropertySource(properties = {"jwt.secret=test-secret"})
+@ContextConfiguration(classes = {PasswordConfiguration.class})
+class PlatformApplicationTests {
 
     @Test
-    public void contextLoads() {
+    void contextLoads() {
     }
 
 }

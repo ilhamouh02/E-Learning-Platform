@@ -81,4 +81,16 @@ public class CourseService implements GenericService<CourseDto, Course> {
     public List<Course> findByTeacherId(Long teacherId) {
         return courseRepository.findByTeacherId(teacherId);
     }
+
+    public List<Course> search(String category, Long teacherId) {
+        if (category != null && teacherId != null) {
+            return courseRepository.findByCategoryAndTeacherId(category, teacherId);
+        } else if (category != null) {
+            return courseRepository.findByCategory(category);
+        } else if (teacherId != null) {
+            return courseRepository.findByTeacherId(teacherId);
+        } else {
+            return courseRepository.findAll();
+        }
+    }
 }

@@ -81,4 +81,8 @@ public class UserService implements GenericService<UserDto, User> {
         }
         return null;
     }
+
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email).orElse(null);
+    }
 }

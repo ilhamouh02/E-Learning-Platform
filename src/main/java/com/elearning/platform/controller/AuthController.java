@@ -53,4 +53,15 @@ public class AuthController {
 
         return ResponseEntity.ok(Map.of("token", jwt));
     }
+
+    @GetMapping("/profile")
+    public ResponseEntity<?> getProfile(java.security.Principal principal) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
+        return ResponseEntity.ok(userDetails);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<?> getCurrentUser(java.security.Principal principal) {
+        return ResponseEntity.ok(userService.findByEmail(principal.getName()));
+    }
 }
