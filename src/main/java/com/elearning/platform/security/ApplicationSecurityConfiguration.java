@@ -1,7 +1,7 @@
 package com.elearning.platform.security;
 
-import com.elearning.platform.auth.JwtAuthFilter;
 import com.elearning.platform.auth.EzLearningUserDetailsService;
+import com.elearning.platform.auth.JwtAuthFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,14 +16,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 @Configuration
+@EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ApplicationSecurityConfiguration {
-
-    private static final Logger logger = LoggerFactory.getLogger(ApplicationSecurityConfiguration.class);
 
     @Autowired
     private EzLearningUserDetailsService userDetailsService;
@@ -37,28 +33,28 @@ public class ApplicationSecurityConfiguration {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+    public AuthenticationManager authenticationManager(HttpSecurity http, PasswordEncoder passwordEncoder) throws Exception {
         return http.getSharedObject(AuthenticationManagerBuilder.class)
-            .userDetailsService(userDetailsService)
-            .passwordEncoder(passwordEncoder())
-            .and()
-            .build();
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder)
+                .and()
+                .build();
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        logger.info("Configuring Spring Security...");
         http
-            .csrf().disable()
-            .authorizeRequests()
-            .antMatchers("/css/**", "/js/**", "/img/**", "/favicon.ico", "/login", "/register").permitAll()
-            .antMatchers("/api/auth/**").permitAll()
-            .anyRequest().authenticated()
-            .and()
-            .sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .csrf().disable()
+                .authorizeRequests()
+                .antMatchers("/css/**", "/js/**", "/img/**", "/favicon.ico", "/login", "/register", "/").permitAll()
+                .antMatchers("/api/auth/**").permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
-        http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 }
