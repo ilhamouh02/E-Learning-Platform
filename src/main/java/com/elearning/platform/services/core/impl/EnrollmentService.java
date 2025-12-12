@@ -39,7 +39,10 @@ public class EnrollmentService implements GenericService<EnrollmentDto, Enrollme
         Course course = courseOpt.get();
 
         // Créer l'inscription
-        Enrollment enrollment = new Enrollment(student, course);
+        Enrollment enrollment = Enrollment.builder()
+                .student(student)
+                .course(course)
+                .build();
         return enrollmentRepository.save(enrollment);
     }
 
@@ -85,9 +88,12 @@ public class EnrollmentService implements GenericService<EnrollmentDto, Enrollme
         Course course = courseOpt.get();
 
         // Créer/mettre à jour l'inscription
-        Enrollment enrollment = new Enrollment(student, course);
-        enrollment.setProgress(enrollmentDto.getProgress());
-        enrollment.setCompleted(enrollmentDto.getCompleted());
+        Enrollment enrollment = Enrollment.builder()
+                .student(student)
+                .course(course)
+                .progress(enrollmentDto.getProgress())
+                .completed(enrollmentDto.getCompleted())
+                .build();
 
         return enrollmentRepository.save(enrollment);
     }
