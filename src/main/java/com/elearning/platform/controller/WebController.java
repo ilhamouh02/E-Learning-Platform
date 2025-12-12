@@ -23,4 +23,14 @@ public class WebController {
         model.addAttribute("userDto", new UserDto());
         return "register";
     }
+
+    @GetMapping("/courses")
+    public String courses() {
+        return "courses/courses";
+    }
+
+    @GetMapping("/tutors")
+    public String tutors() {
+        return "tutors/tutors";
+    }
 }
