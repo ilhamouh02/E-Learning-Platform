@@ -2,7 +2,15 @@ package com.elearning.platform.dto;
 
 import java.util.Map;
 
+/**
+ * QuizSubmitDto - Data Transfer Object pour soumettre un quiz
+ * Chemin: src/main/java/com/elearning/platform/dto/QuizSubmitDto.java
+ * 
+ * Utilisé quand un étudiant soumet ses réponses de quiz
+ * Format: {questionId -> answer}
+ */
 public class QuizSubmitDto {
+    
     private Long quizId;
     private Long studentId;
     private Map<Long, String> answers; // questionId -> answer

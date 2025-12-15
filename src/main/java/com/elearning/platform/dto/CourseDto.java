@@ -2,6 +2,12 @@ package com.elearning.platform.dto;
 
 import javax.validation.constraints.NotBlank;
 
+/**
+ * CourseDto - Data Transfer Object pour Course
+ * Chemin: src/main/java/com/elearning/platform/dto/CourseDto.java
+ * 
+ * Utilisé pour créer/modifier les cours
+ */
 public class CourseDto {
     
     private Long id;

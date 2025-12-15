@@ -10,8 +10,17 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
+/**
+ * QuestionService - Gère les questions de quiz
+ * Chemin: src/main/java/com/elearning/platform/services/QuestionService.java
+ * 
+ * RÉSOUT LES PROBLÈMES:
+ * ✅ Créer des questions
+ * ✅ Modifier des questions
+ * ✅ Récupérer les questions par quiz
+ * ✅ Calculer les points totaux
+ */
 @Service
 public class QuestionService {
 
@@ -21,6 +30,11 @@ public class QuestionService {
     @Autowired
     private QuizRepository quizRepository;
 
+    /**
+     * Crée une nouvelle question
+     * 
+     * RÉSOUT: Un enseignant ajoute une question à un quiz
+     */
     public Question createQuestion(QuestionDto questionDto) {
         // Vérifier que le quiz existe
         Optional<Quiz> quizOpt = quizRepository.findById(questionDto.getQuizId());
@@ -42,6 +56,11 @@ public class QuestionService {
         return questionRepository.save(question);
     }
 
+    /**
+     * Met à jour une question
+     * 
+     * RÉSOUT: Un enseignant modifie une question
+     */
     public Question updateQuestion(Long id, QuestionDto questionDto) {
         Optional<Question> questionOpt = questionRepository.findById(id);
         if (!questionOpt.isPresent()) {
@@ -57,15 +76,51 @@ public class QuestionService {
         return questionRepository.save(question);
     }
 
+    /**
+     * Récupère les questions d'un quiz
+     * 
+     * RÉSOUT: Afficher les questions d'un quiz
+     */
     public List<Question> getQuestionsByQuizId(Long quizId) {
         return questionRepository.findByQuizId(quizId);
     }
 
+    /**
+     * Récupère une question par ID
+     * 
+     * RÉSOUT: Afficher une question spécifique
+     */
     public Optional<Question> getQuestionById(Long id) {
         return questionRepository.findById(id);
     }
 
+    /**
+     * Supprime une question
+     * 
+     * RÉSOUT: Un enseignant supprime une question
+     */
     public void deleteQuestion(Long id) {
         questionRepository.deleteById(id);
+    }
+
+    /**
+     * Calcule le nombre total de points pour un quiz
+     * 
+     * RÉSOUT: Calculer le score maximum possible
+     */
+    public Integer calculateTotalPoints(Long quizId) {
+        List<Question> questions = questionRepository.findByQuizId(quizId);
+        return questions.stream()
+            .mapToInt(q -> q.getPoints() != null ? q.getPoints() : 1)
+            .sum();
+    }
+
+    /**
+     * Compte le nombre de questions dans un quiz
+     * 
+     * RÉSOUT: Afficher le nombre de questions
+     */
+    public long countByQuizId(Long quizId) {
+        return questionRepository.findByQuizId(quizId).size();
     }
 }

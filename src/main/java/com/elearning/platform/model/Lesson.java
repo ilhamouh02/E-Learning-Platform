@@ -3,8 +3,17 @@ package com.elearning.platform.model;
 import javax.persistence.*;
 import java.util.List;
 
+/**
+ * Entité Lesson - Leçon d'un cours
+ * Chemin: src/main/java/com/elearning/platform/model/Lesson.java
+ * 
+ * Chaque leçon appartient à un cours et peut avoir plusieurs quizzes
+ */
 @Entity
-@Table(name = "lessons")
+@Table(name = "lessons", indexes = {
+    @Index(name = "idx_course_id", columnList = "course_id"),
+    @Index(name = "idx_course_order", columnList = "course_id,order_index")
+})
 public class Lesson {
     
     @Id
@@ -23,10 +32,12 @@ public class Lesson {
     @Column(name = "order_index")
     private Integer orderIndex = 0;
 
+    // Relation avec le cours (parent)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
+    // Relation avec les quizzes
     @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Quiz> quizzes;
 

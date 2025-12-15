@@ -2,6 +2,12 @@ package com.elearning.platform.dto;
 
 import javax.validation.constraints.NotBlank;
 
+/**
+ * LessonDto - Data Transfer Object pour Lesson
+ * Chemin: src/main/java/com/elearning/platform/dto/LessonDto.java
+ * 
+ * Utilisé pour créer/modifier les leçons
+ */
 public class LessonDto {
     
     private Long id;

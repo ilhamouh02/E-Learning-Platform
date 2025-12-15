@@ -3,6 +3,12 @@ package com.elearning.platform.dto;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
+/**
+ * QuestionDto - Data Transfer Object pour Question
+ * Chemin: src/main/java/com/elearning/platform/dto/QuestionDto.java
+ * 
+ * Utilisé pour créer/modifier les questions de quiz
+ */
 public class QuestionDto {
     
     private Long id;
@@ -10,7 +16,7 @@ public class QuestionDto {
     @NotBlank(message = "Le texte de la question est obligatoire")
     private String questionText;
     
-    private String options; // Format JSON
+    private String options; // Format JSON: ["option1", "option2", ...]
     
     @NotBlank(message = "La réponse correcte est obligatoire")
     private String correctAnswer;

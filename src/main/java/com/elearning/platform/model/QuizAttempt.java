@@ -3,24 +3,37 @@ package com.elearning.platform.model;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+/**
+ * Entité QuizAttempt - Tentative de quiz par un étudiant
+ * Chemin: src/main/java/com/elearning/platform/model/QuizAttempt.java
+ * 
+ * Enregistre les résultats des quiz
+ * Unique: (quiz_id, student_id)
+ */
 @Entity
-@Table(name = "quiz_attempts")
+@Table(name = "quiz_attempts", indexes = {
+    @Index(name = "idx_quiz_id", columnList = "quiz_id"),
+    @Index(name = "idx_student_id", columnList = "student_id"),
+    @Index(name = "unique_attempt", columnList = "quiz_id,student_id", unique = true)
+})
 public class QuizAttempt {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Relation avec le quiz
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "quiz_id", nullable = false)
     private Quiz quiz;
 
+    // Relation avec l'étudiant
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "student_id", nullable = false)
     private User student;
 
     @Column
-    private Integer score;
+    private Integer score; // En pourcentage (0-100)
 
     @Column(name = "completed_at", nullable = false)
     private LocalDateTime completedAt;
@@ -57,4 +70,9 @@ public class QuizAttempt {
 
     public LocalDateTime getCompletedAt() { return completedAt; }
     public void setCompletedAt(LocalDateTime completedAt) { this.completedAt = completedAt; }
+
+    // Utilitaire
+    public boolean isPassed() {
+        return quiz != null && score >= quiz.getPassingScore();
+    }
 }

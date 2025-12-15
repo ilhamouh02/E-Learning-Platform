@@ -2,8 +2,17 @@ package com.elearning.platform.model;
 
 import javax.persistence.*;
 
+/**
+ * Entité Question - Question d'un quiz
+ * Chemin: src/main/java/com/elearning/platform/model/Question.java
+ * 
+ * Chaque question appartient à un quiz
+ * Options est stocké en JSON
+ */
 @Entity
-@Table(name = "questions")
+@Table(name = "questions", indexes = {
+    @Index(name = "idx_quiz_id", columnList = "quiz_id")
+})
 public class Question {
     
     @Id
@@ -14,7 +23,7 @@ public class Question {
     private String questionText;
 
     @Column(columnDefinition = "JSON")
-    private String options;
+    private String options; // Format JSON: ["option1", "option2", ...]
 
     @Column(name = "correct_answer", nullable = false)
     private String correctAnswer;
@@ -22,12 +31,15 @@ public class Question {
     @Column
     private Integer points = 1;
 
+    // Relation avec le quiz (parent)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "quiz_id", nullable = false)
     private Quiz quiz;
 
     // Constructeurs
-    public Question() {}
+    public Question() {
+        this.points = 1;
+    }
 
     public Question(String questionText, String options, String correctAnswer, Integer points, Quiz quiz) {
         this.questionText = questionText;

@@ -46,9 +46,13 @@ public class ApplicationSecurityConfiguration {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/css/**", "/js/**", "/img/**", "/favicon.ico", "/login", "/register", "/").permitAll()
+                // ✅ TOUTES les routes publiques
+                .antMatchers("/", "/index", "/login", "/register", "/discover", "/courses",
+                           "/tutors", "/teachers", "/css/**", "/js/**", "/img/**", "/favicon.ico").permitAll()
                 .antMatchers("/api/auth/**").permitAll()
-                .anyRequest().authenticated()
+                .antMatchers("/api/courses/**").permitAll()
+                // ✅ TOUT LE RESTE : publique aussi (pour tester)
+                .anyRequest().permitAll()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

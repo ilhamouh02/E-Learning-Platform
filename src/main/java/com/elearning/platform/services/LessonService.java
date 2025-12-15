@@ -11,6 +11,16 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * LessonService - Gère les leçons
+ * Chemin: src/main/java/com/elearning/platform/services/LessonService.java
+ * 
+ * RÉSOUT LES PROBLÈMES:
+ * ✅ Créer des leçons
+ * ✅ Modifier des leçons
+ * ✅ Récupérer les leçons par cours
+ * ✅ Supprimer des leçons
+ */
 @Service
 public class LessonService {
 
@@ -20,6 +30,11 @@ public class LessonService {
     @Autowired
     private CourseRepository courseRepository;
 
+    /**
+     * Crée une nouvelle leçon
+     * 
+     * RÉSOUT: Un enseignant ajoute une leçon à son cours
+     */
     public Lesson createLesson(LessonDto lessonDto) {
         // Vérifier que le cours existe
         Optional<Course> courseOpt = courseRepository.findById(lessonDto.getCourseId());
@@ -41,6 +56,11 @@ public class LessonService {
         return lessonRepository.save(lesson);
     }
 
+    /**
+     * Met à jour une leçon
+     * 
+     * RÉSOUT: Un enseignant modifie sa leçon
+     */
     public Lesson updateLesson(Long id, LessonDto lessonDto) {
         Optional<Lesson> lessonOpt = lessonRepository.findById(id);
         if (!lessonOpt.isPresent()) {
@@ -51,19 +71,47 @@ public class LessonService {
         lesson.setTitle(lessonDto.getTitle());
         lesson.setContent(lessonDto.getContent());
         lesson.setVideoUrl(lessonDto.getVideoUrl());
+        
+        if (lessonDto.getOrderIndex() != null) {
+            lesson.setOrderIndex(lessonDto.getOrderIndex());
+        }
 
         return lessonRepository.save(lesson);
     }
 
+    /**
+     * Récupère les leçons d'un cours
+     * 
+     * RÉSOUT: Afficher le contenu d'un cours
+     */
     public List<Lesson> getLessonsByCourseId(Long courseId) {
         return lessonRepository.findByCourseId(courseId);
     }
 
+    /**
+     * Récupère une leçon par ID
+     * 
+     * RÉSOUT: Afficher les détails d'une leçon
+     */
     public Optional<Lesson> getLessonById(Long id) {
         return lessonRepository.findById(id);
     }
 
+    /**
+     * Supprime une leçon
+     * 
+     * RÉSOUT: Un enseignant supprime une leçon
+     */
     public void deleteLesson(Long id) {
         lessonRepository.deleteById(id);
+    }
+
+    /**
+     * Compte le nombre de leçons dans un cours
+     * 
+     * RÉSOUT: Afficher le nombre de leçons
+     */
+    public long countLessonsByCourse(Long courseId) {
+        return lessonRepository.findByCourseId(courseId).size();
     }
 }

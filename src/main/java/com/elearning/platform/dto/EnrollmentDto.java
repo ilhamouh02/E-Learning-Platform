@@ -2,6 +2,12 @@ package com.elearning.platform.dto;
 
 import java.time.LocalDateTime;
 
+/**
+ * EnrollmentDto - Data Transfer Object pour Enrollment
+ * Chemin: src/main/java/com/elearning/platform/dto/EnrollmentDto.java
+ * 
+ * Utilisé pour créer/modifier les inscriptions
+ */
 public class EnrollmentDto {
     
     private Long studentId;

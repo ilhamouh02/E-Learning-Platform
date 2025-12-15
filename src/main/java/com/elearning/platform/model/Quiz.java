@@ -3,8 +3,17 @@ package com.elearning.platform.model;
 import javax.persistence.*;
 import java.util.List;
 
+/**
+ * Entité Quiz - Évaluation d'une leçon
+ * Chemin: src/main/java/com/elearning/platform/model/Quiz.java
+ * 
+ * Chaque quiz appartient à une leçon et a plusieurs questions
+ * Propriétés: timeLimit (minutes), passingScore (%)
+ */
 @Entity
-@Table(name = "quizzes")
+@Table(name = "quizzes", indexes = {
+    @Index(name = "idx_lesson_id", columnList = "lesson_id")
+})
 public class Quiz {
     
     @Id
@@ -15,23 +24,28 @@ public class Quiz {
     private String title;
 
     @Column(name = "time_limit")
-    private Integer timeLimit;
+    private Integer timeLimit; // en minutes
 
     @Column(name = "passing_score")
-    private Integer passingScore = 70;
+    private Integer passingScore = 70; // en pourcentage
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "lesson_id")
+    // Relation avec la leçon (parent)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "lesson_id", nullable = false)
     private Lesson lesson;
 
+    // Relation avec les questions
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Question> questions;
 
+    // Relation avec les tentatives
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<QuizAttempt> attempts;
 
     // Constructeurs
-    public Quiz() {}
+    public Quiz() {
+        this.passingScore = 70;
+    }
 
     public Quiz(String title, Integer timeLimit, Integer passingScore, Lesson lesson) {
         this.title = title;

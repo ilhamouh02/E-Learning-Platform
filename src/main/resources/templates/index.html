@@ -1,69 +1,82 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
-<head th:insert="fragments/head">
-<!-- Head fragment -->
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plateforme E-Learning</title>
+    <link rel="stylesheet" href="/css/materialize.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
-<header th:insert="fragments/header">
-<!-- Header Fragment -->
-</header>
+<nav class="teal lighten-2">
+    <div class="nav-wrapper container">
+        <a href="/" class="brand-logo white-text">Plateforme E-Learning</a>
+        <ul class="right hide-on-med-and-down">
+            <li><a href="/discover" class="white-text">Découvrir</a></li>
+            <li><a href="/courses" class="white-text">Cours</a></li>
+            <li><a href="/login" class="white-text">Connexion</a></li>
+            <li><a href="/register" class="white-text">Inscription</a></li>
+        </ul>
+        <a href="#" data-target="nav-mobile" class="sidenav-trigger white-text">
+            <i class="material-icons">menu</i>
+        </a>
+    </div>
+</nav>
+
+<ul id="nav-mobile" class="sidenav teal darken-2">
+    <li><a href="/discover" class="white-text">Découvrir</a></li>
+    <li><a href="/courses" class="white-text">Cours</a></li>
+    <li><a href="/login" class="white-text">Connexion</a></li>
+    <li><a href="/register" class="white-text">Inscription</a></li>
+</ul>
 
 <main>
     <div id="index-banner" class="parallax-container">
         <div class="section no-pad-bot">
             <div class="container">
                 <br><br>
-                <h1 class="header center white-text">Online Education</h1>
+                <h1 class="header center white-text">Éducation en Ligne</h1>
                 <div class="row center">
-                    <h5 class="header col s12 light">For training to succeed, you need the best online learning platform</h5>
+                    <h5 class="header col s12 light">Pour une formation réussie, vous avez besoin de la meilleure plateforme d'apprentissage en ligne</h5>
                 </div>
                 <br>
                 <div class="row center">
-                    <a th:href="@{/discover}" class="waves-effect waves-light btn-large">Let's Start</a>
+                    <a href="/discover" class="waves-effect waves-light btn-large teal">Commencer</a>
                 </div>
                 <br><br>
             </div>
         </div>
-        <div class="parallax"><img src="/img/background2.jpg" alt="Unsplash background img 2"></div>
+        <div class="parallax"><img src="/img/background2.jpg" alt="Fond"></div>
     </div>
+
     <div class="container">
         <div class="section">
-
-            <!--   Icon Section   -->
             <div class="row">
                 <div class="col s12 m4">
                     <div class="icon-block">
                         <h2 class="center teal-text text-lighten-2"><i class="material-icons">devices</i></h2>
-                        <h5 class="center">Learn from anywhere</h5>
-
-                        <p class="light">Our platform is designed so that you can access it from any device,
-                            giving you the necessary tools for your learning from wherever you are.</p>
+                        <h5 class="center">Apprenez de partout</h5>
+                        <p class="light">Notre plateforme est conçue pour que vous puissiez y accéder depuis n'importe quel appareil, vous donnant les outils nécessaires pour apprendre de n'importe où.</p>
                     </div>
                 </div>
 
                 <div class="col s12 m4">
                     <div class="icon-block">
                         <h2 class="center teal-text text-lighten-2"><i class="material-icons">group</i></h2>
-                        <h5 class="center">A community you can count on</h5>
-
-                        <p class="light">be part of a large community of people who,
-                            just like you, seek to constantly improve their skills and
-                            acquire knowledge for this constantly evolving world.</p>
+                        <h5 class="center">Une communauté sur laquelle compter</h5>
+                        <p class="light">Faites partie d'une grande communauté de personnes qui, comme vous, cherchent à améliorer constamment leurs compétences et acquérir des connaissances.</p>
                     </div>
                 </div>
 
                 <div class="col s12 m4">
                     <div class="icon-block">
                         <h2 class="center teal-text text-lighten-2"><i class="material-icons">local_atm</i></h2>
-                        <h5 class="center">Prices within everyone's reach</h5>
-
-                        <p class="light">Since we focus on the fact that knowledge must be imparted under equal conditions,
-                            we are committed to providing you with quality education at very affordable prices.</p>
+                        <h5 class="center">Prix accessibles à tous</h5>
+                        <p class="light">Puisque nous croyons que la connaissance doit être dispensée dans l'égalité, nous nous engageons à vous fournir une éducation de qualité à des prix très abordables.</p>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -71,28 +84,144 @@
         <div class="section no-pad-bot">
             <div class="container">
                 <div class="row center">
-                    <h5 class="header col s12 light">A modern technology vocational school.</h5>
+                    <h5 class="header col s12 light">Une école professionnelle moderne en technologie.</h5>
                 </div>
             </div>
         </div>
-        <div class="parallax"><img src="/img/background1.jpg" alt="Unsplash background img 1"></div>
+        <div class="parallax"><img src="/img/background1.jpg" alt="Fond"></div>
     </div>
 
     <div class="container">
         <div class="section">
-
             <div class="row">
                 <div class="col s12 center">
-                    <h4>Contact us</h4>
-                    <p class="left-align light">We are a platform that is interested in the learning of all people, because we believe in the importance of
-                        providing quality content for all interested audiences, with the purpose of training great
-                        professionals and people who will be leaders in this field. <br><br>
-                        Any questions or queries you have can be communicated to us by email. <a
-                                href="mailto:contact@mosab.tech" class="teal-text">contact@mosab.tech</a>,
-                        which we will be helping you in any matters.</p>
+                    <h4>Nous contacter</h4>
+                    <p class="left-align light">Nous sommes une plateforme intéressée par l'apprentissage de tous, car nous croyons à l'importance de fournir du contenu de qualité à tous les publics intéressés, dans le but de former de grands professionnels et des leaders dans ce domaine.</p>
                 </div>
             </div>
+        </div>
+    </div>
+</main>
 
+<footer class="page-footer teal">
+    <div class="container">
+        <div class="row">
+            <div class="col l6 s12">
+                <h5 class="white-text">Plateforme E-Learning</h5>
+                <p class="grey-text text-lighten-4">Éducation de qualité pour tous.</p>
+            </div>
+            <div class="col l4 offset-l2 s12">
+                <h5 class="white-text">Liens</h5>
+                <ul>
+                    <li><a class="grey-text text-lighten-3" href="/discover">Découvrir</a></li>
+                    <li><a class="grey-text text-lighten-3" href="/courses">Cours</a></li>
+                    <li><a class="grey-text text-lighten-3" href="/login">Connexion</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="footer-copyright">
+        <div class="container">
+            © 2025 Plateforme E-Learning. Tous droits réservés.
+        </div>
+    </div>
+</footer>
+
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="/js/materialize.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var elems = document.querySelectorAll('.sidenav');
+        M.Sidenav.init(elems);
+        var parallaxElems = document.querySelectorAll('.parallax');
+        M.Parallax.init(parallaxElems);
+    });
+</script>
+</body>
+</html>
+EOF
+cat /mnt/user-data/outputs/CORRECTED_CODE/index_FRANCAIS_SIMPLE.html
+Sortie
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plateforme E-Learning</title>
+    <link rel="stylesheet" href="/css/materialize.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+<nav class="teal lighten-2">
+    <div class="nav-wrapper container">
+        <a href="/" class="brand-logo white-text">Plateforme E-Learning</a>
+        <ul class="right hide-on-med-and-down">
+            <li><a href="/discover" class="white-text">Découvrir</a></li>
+            <li><a href="/courses" class="white-text">Cours</a></li>
+            <li><a href="/login" class="white-text">Connexion</a></li>
+            <li><a href="/register" class="white-text">Inscription</a></li>
+        </ul>
+        <a href="#" data-target="nav-mobile" class="sidenav-trigger white-text">
+            <i class="material-icons">menu</i>
+        </a>
+    </div>
+</nav>
+
+<ul id="nav-mobile" class="sidenav teal darken-2">
+    <li><a href="/discover" class="white-text">Découvrir</a></li>
+    <li><a href="/courses" class="white-text">Cours</a></li>
+    <li><a href="/login" class="white-text">Connexion</a></li>
+    <li><a href="/register" class="white-text">Inscription</a></li>
+</ul>
+
+<main>
+    <div id="index-banner" class="parallax-container">
+        <div class="section no-pad-bot">
+            <div class="container">
+                <br><br>
+                <h1 class="header center white-text">Éducation en Ligne</h1>
+                <div class="row center">
+                    <h5 class="header col s12 light">Pour une formation réussie, vous avez besoin de la meilleure plateforme d'apprentissage en ligne</h5>
+                </div>
+                <br>
+                <div class="row center">
+                    <a href="/discover" class="waves-effect waves-light btn-large teal">Commencer</a>
+                </div>
+                <br><br>
+            </div>
+        </div>
+        <div class="parallax"><img src="/img/background2.jpg" alt="Fond"></div>
+    </div>
+
+    <div class="container">
+        <div class="section">
+            <div class="row">
+                <div class="col s12 m4">
+                    <div class="icon-block">
+                        <h2 class="center teal-text text-lighten-2"><i class="material-icons">devices</i></h2>
+                        <h5 class="center">Apprenez de partout</h5>
+                        <p class="light">Notre plateforme est conçue pour que vous puissiez y accéder depuis n'importe quel appareil, vous donnant les outils nécessaires pour apprendre de n'importe où.</p>
+                    </div>
+                </div>
+
+                <div class="col s12 m4">
+                    <div class="icon-block">
+                        <h2 class="center teal-text text-lighten-2"><i class="material-icons">group</i></h2>
+                        <h5 class="center">Une communauté sur laquelle compter</h5>
+                        <p class="light">Faites partie d'une grande communauté de personnes qui, comme vous, cherchent à améliorer constamment leurs compétences et acquérir des connaissances.</p>
+                    </div>
+                </div>
+
+                <div class="col s12 m4">
+                    <div class="icon-block">
+                        <h2 class="center teal-text text-lighten-2"><i class="material-icons">local_atm</i></h2>
+                        <h5 class="center">Prix accessibles à tous</h5>
+                        <p class="light">Puisque nous croyons que la connaissance doit être dispensée dans l'égalité, nous nous engageons à vous fournir une éducation de qualité à des prix très abordables.</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -100,22 +229,58 @@
         <div class="section no-pad-bot">
             <div class="container">
                 <div class="row center">
-                    <h5 class="header col s12 light">Join us and be part of this great technological revolution.</h5>
+                    <h5 class="header col s12 light">Une école professionnelle moderne en technologie.</h5>
                 </div>
             </div>
         </div>
-        <div class="parallax"><img src="/img/background3.jpg" alt="Unsplashed background img 3"></div>
+        <div class="parallax"><img src="/img/background1.jpg" alt="Fond"></div>
+    </div>
+
+    <div class="container">
+        <div class="section">
+            <div class="row">
+                <div class="col s12 center">
+                    <h4>Nous contacter</h4>
+                    <p class="left-align light">Nous sommes une plateforme intéressée par l'apprentissage de tous, car nous croyons à l'importance de fournir du contenu de qualité à tous les publics intéressés, dans le but de former de grands professionnels et des leaders dans ce domaine.</p>
+                </div>
+            </div>
+        </div>
     </div>
 </main>
 
-<footer class="page-footer teal" th:insert="fragments/footer">
-<!-- Footer fragment -->
+<footer class="page-footer teal">
+    <div class="container">
+        <div class="row">
+            <div class="col l6 s12">
+                <h5 class="white-text">Plateforme E-Learning</h5>
+                <p class="grey-text text-lighten-4">Éducation de qualité pour tous.</p>
+            </div>
+            <div class="col l4 offset-l2 s12">
+                <h5 class="white-text">Liens</h5>
+                <ul>
+                    <li><a class="grey-text text-lighten-3" href="/discover">Découvrir</a></li>
+                    <li><a class="grey-text text-lighten-3" href="/courses">Cours</a></li>
+                    <li><a class="grey-text text-lighten-3" href="/login">Connexion</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="footer-copyright">
+        <div class="container">
+            © 2025 Plateforme E-Learning. Tous droits réservés.
+        </div>
+    </div>
 </footer>
 
-<!--  Scripts-->
 <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script src="/js/materialize.js"></script>
-<script src="/js/init.js"></script>
-
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var elems = document.querySelectorAll('.sidenav');
+        M.Sidenav.init(elems);
+        var parallaxElems = document.querySelectorAll('.parallax');
+        M.Parallax.init(parallaxElems);
+    });
+</script>
 </body>
 </html>

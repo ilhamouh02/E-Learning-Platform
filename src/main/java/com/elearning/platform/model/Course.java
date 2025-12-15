@@ -4,8 +4,17 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Entité Course - Cours de la plateforme
+ * Chemin: src/main/java/com/elearning/platform/model/Course.java
+ * 
+ * Chaque cours a un enseignant et peut avoir plusieurs leçons et étudiants inscrits
+ */
 @Entity
-@Table(name = "courses")
+@Table(name = "courses", indexes = {
+    @Index(name = "idx_teacher_id", columnList = "teacher_id"),
+    @Index(name = "idx_category", columnList = "category")
+})
 public class Course {
 
     @Id
@@ -24,18 +33,23 @@ public class Course {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    // Relation avec l'enseignant (professeur)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "teacher_id")
+    @JoinColumn(name = "teacher_id", nullable = true)
     private User teacher;
 
+    // Relation avec les leçons
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Lesson> lessons;
 
+    // Relation avec les inscriptions
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Enrollment> enrollments;
 
     // Constructeurs
-    public Course() {}
+    public Course() {
+        this.createdAt = LocalDateTime.now();
+    }
 
     public Course(String title, String description, String category, User teacher) {
         this.title = title;

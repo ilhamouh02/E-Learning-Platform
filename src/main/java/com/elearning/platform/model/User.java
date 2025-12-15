@@ -3,16 +3,24 @@ package com.elearning.platform.model;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
+/**
+ * Entité User - Utilisateur de la plateforme
+ * Chemin: src/main/java/com/elearning/platform/model/User.java
+ * 
+ * Rôles supportés : STUDENT, TEACHER, ADMIN
+ */
 @Entity
-@Table(name = "users")
+@Table(name = "users", indexes = {
+    @Index(name = "idx_email", columnList = "email"),
+    @Index(name = "idx_role", columnList = "role")
+})
 public class User implements UserDetails {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -41,7 +49,10 @@ public class User implements UserDetails {
     private List<QuizAttempt> quizAttempts;
 
     // Constructeurs
-    public User() {}
+    public User() {
+        this.createdAt = LocalDateTime.now();
+        this.role = Role.STUDENT;
+    }
 
     public User(String email, String password, Role role) {
         this.email = email;
@@ -85,12 +96,14 @@ public class User implements UserDetails {
     public List<QuizAttempt> getQuizAttempts() { return quizAttempts; }
     public void setQuizAttempts(List<QuizAttempt> quizAttempts) { this.quizAttempts = quizAttempts; }
 
-    // Enum pour les rôles
+    // Enum des rôles
     public enum Role {
-        STUDENT, TEACHER, ADMIN
+        STUDENT,   // Étudiant
+        TEACHER,   // Enseignant
+        ADMIN      // Administrateur
     }
 
-    // Méthodes de l'interface UserDetails
+    // ========== Implémentation UserDetails ==========
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));

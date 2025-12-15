@@ -3,20 +3,31 @@ package com.elearning.platform.model;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
+/**
+ * Entité Enrollment - Inscription d'un étudiant à un cours
+ * Chemin: src/main/java/com/elearning/platform/model/Enrollment.java
+ * 
+ * ✅ CORRIGÉ FINAL: EnrollmentId est une classe SÉPARÉE et publique
+ * Utilise @EmbeddedId pour la clé composite
+ */
 @Entity
-@Table(name = "enrollments")
-@IdClass(EnrollmentId.class)
+@Table(name = "enrollments", indexes = {
+    @Index(name = "idx_student_id", columnList = "student_id"),
+    @Index(name = "idx_course_id", columnList = "course_id")
+})
 public class Enrollment {
     
-    @Id
-    @ManyToOne(fetch = FetchType.LAZY)
+    @EmbeddedId
+    private EnrollmentId id = new EnrollmentId();
+    
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @MapsId("studentId")
     @JoinColumn(name = "student_id", nullable = false)
     private User student;
 
-    @Id
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @MapsId("courseId")
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
@@ -30,11 +41,16 @@ public class Enrollment {
     private Boolean completed = false;
 
     // Constructeurs
-    public Enrollment() {}
+    public Enrollment() {
+        this.enrolledAt = LocalDateTime.now();
+        this.progress = 0;
+        this.completed = false;
+    }
 
     public Enrollment(User student, Course course) {
         this.student = student;
         this.course = course;
+        this.id = new EnrollmentId(student.getId(), course.getId());
         this.enrolledAt = LocalDateTime.now();
         this.progress = 0;
         this.completed = false;
@@ -51,14 +67,32 @@ public class Enrollment {
         if (completed == null) {
             completed = false;
         }
+        if (id == null) {
+            id = new EnrollmentId();
+        }
+        if (student != null && course != null) {
+            id.setStudentId(student.getId());
+            id.setCourseId(course.getId());
+        }
     }
 
     // Getters et Setters
+    public EnrollmentId getId() { return id; }
+    public void setId(EnrollmentId id) { this.id = id; }
+
     public User getStudent() { return student; }
-    public void setStudent(User student) { this.student = student; }
+    public void setStudent(User student) { 
+        this.student = student;
+        if (id == null) id = new EnrollmentId();
+        if (student != null) id.setStudentId(student.getId());
+    }
 
     public Course getCourse() { return course; }
-    public void setCourse(Course course) { this.course = course; }
+    public void setCourse(Course course) { 
+        this.course = course;
+        if (id == null) id = new EnrollmentId();
+        if (course != null) id.setCourseId(course.getId());
+    }
 
     public LocalDateTime getEnrolledAt() { return enrolledAt; }
     public void setEnrolledAt(LocalDateTime enrolledAt) { this.enrolledAt = enrolledAt; }
@@ -68,37 +102,14 @@ public class Enrollment {
 
     public Boolean getCompleted() { return completed; }
     public void setCompleted(Boolean completed) { this.completed = completed; }
-}
-
-// Classe pour la clé composite
-class EnrollmentId implements Serializable {
-    private Long student;
-    private Long course;
-
-    public EnrollmentId() {}
-
-    public EnrollmentId(Long student, Long course) {
-        this.student = student;
-        this.course = course;
-    }
-
-    public Long getStudent() { return student; }
-    public void setStudent(Long student) { this.student = student; }
-
-    public Long getCourse() { return course; }
-    public void setCourse(Long course) { this.course = course; }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        EnrollmentId that = (EnrollmentId) o;
-        return Objects.equals(student, that.student) &&
-               Objects.equals(course, that.course);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(student, course);
+    public String toString() {
+        return "Enrollment{" +
+                "id=" + id +
+                ", student=" + (student != null ? student.getId() : null) +
+                ", course=" + (course != null ? course.getId() : null) +
+                ", progress=" + progress +
+                '}';
     }
 }

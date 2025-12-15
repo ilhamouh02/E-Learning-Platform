@@ -1,7 +1,6 @@
 package com.elearning.platform.controller;
 
-import com.elearning.platform.services.core.impl.CourseService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.elearning.platform.dto.UserDto;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,27 +8,39 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class TemplateController {
 
-    @Autowired
-    private CourseService courseService;
-
     @GetMapping("/")
-    public String getHome() {
+    public String home() {
         return "index";
     }
 
     @GetMapping("/login")
-    public String getLogin() {
+    public String login() {
         return "login";
     }
 
     @GetMapping("/register")
-    public String getRegister() {
+    public String register(Model model) {
+        model.addAttribute("userDto", new UserDto());
         return "register";
     }
 
+    @GetMapping("/discover")
+    public String discover() {
+        return "discover";
+    }
+
     @GetMapping("/courses")
-    public String getCourses(Model model) {
-        model.addAttribute("courses", courseService.search(null, null));
+    public String courses() {
         return "courses/courses";
+    }
+
+    @GetMapping("/tutors")
+    public String tutors() {
+        return "tutors/tutors";
+    }
+
+    @GetMapping("/teachers")
+    public String teachers() {
+        return "tutors/tutors";
     }
 }
