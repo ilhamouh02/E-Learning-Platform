@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head th:insert="fragments/head">
 </head>
@@ -8,52 +8,77 @@
 
 <main>
     <div class="container">
-        <h3 class="center">Log in</h3>
+        <h3 class="center">Se connecter</h3>
         <br>
         <div class="row">
             <div class="section col s12 m6 l4 offset-m3 offset-l4">
-                <form method="post"
-                      th:action="@{/login}"
-                >
-                    <div th:if="${param.error}">
-                        <h5 class="center red-text text-lighten-1">Invalid username or password</h5>
-                    </div>
-                    <br>
+                
+                <!-- ✅ AFFICHER LES ERREURS EN ROUGE -->
+                <div th:if="${error}" class="card-panel red lighten-2">
+                    <h5 class="center red-text text-darken-2" th:text="${error}"></h5>
+                </div>
+
+                <!-- ✅ AFFICHER LES MESSAGES DE SUCCÈS EN VERT -->
+                <div th:if="${success}" class="card-panel green lighten-2">
+                    <h5 class="center green-text text-darken-2" th:text="${success}"></h5>
+                </div>
+
+                <!-- ✅ FORMULAIRE POST /login (IMPORTANT : method="post") -->
+                <!-- ⚠️ PAS d'objet Thymeleaf - on utilise @RequestParam directement -->
+                <form method="post" th:action="@{/login}">
+                    
+                    <!-- CHAMP 1 : Email ou Pseudo (OBLIGATOIRE) -->
                     <div class="input-field">
-                        <label for="username">UserName</label>
-                        <input type="text" class="class-controller"
-                               id="username" name="username" autofocus
+                        <label for="username">Email ou Pseudo</label>
+                        <!-- ✅ name="username" (correspond à @RequestParam String username) -->
+                        <!-- ✅ th:value pour conserver la valeur en cas d'erreur -->
+                        <input type="text" 
+                               class="class-controller"
+                               id="username" 
+                               name="username"
+                               th:value="${username}"
+                               required 
+                               autofocus
                         >
                     </div>
 
+                    <!-- CHAMP 2 : Mot de passe (OBLIGATOIRE) -->
                     <div class="input-field mb-5">
-                        <label for="password">Password</label>
-                        <input type="password" class="class-controller"
-                               id="password" name="password"
+                        <label for="password">Mot de passe</label>
+                        <!-- ✅ name="password" (correspond à @RequestParam String password) -->
+                        <input type="password" 
+                               class="class-controller"
+                               id="password" 
+                               name="password"
+                               required
                         >
                     </div>
 
+                    <!-- BOUTON SUBMIT -->
                     <div class="center">
-                        <button type="submit" class="btn">
-                            Log in
+                        <button type="submit" class="btn waves-effect waves-light teal">
+                            Se connecter
                         </button>
                     </div>
-                    <div class="mt-5">
-                        <span>You aren't registered yet? </span><a th:href="@{/register}" class="teal-text">Sign up here</a>
+
+                    <!-- LIEN VERS REGISTER -->
+                    <div class="mt-5 center">
+                        <span>Vous n'êtes pas encore inscrit ? </span>
+                        <a th:href="@{/register}" class="teal-text">S'inscrire ici</a>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </main>
+
 <br><br>
-<footer class="page-footer teal" th:insert="fragments/footer">
+<footer class="page-footer teal" th:insert="fragments/footer"></footer>
 
-</footer>
-
-<!--  Scripts-->
+<!-- ✅ SCRIPTS DANS CET ORDRE ET EN DERNIER (AVANT </body>) -->
 <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script src="/js/materialize.js"></script>
 <script src="/js/init.js"></script>
+
 </body>
 </html>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head th:insert="fragments/head">
 </head>
@@ -8,77 +8,151 @@
 
 <main>
     <div class="container">
-        <h3 class="center">New user</h3>
+        <h3 class="center">Créer un compte</h3>
         <br>
         <div class="row">
             <div class="section col s12 l6 offset-l3">
-                <form method="post"
-                      th:object="${userDto}"
-                      th:action="@{/register}"
-                >
-                    <div th:if="${param.error}">
-                        <h5 class="center red-text text-lighten-1">${param.error}</h5>
-                    </div>
-                    <br>
+                
+                <!-- ✅ AFFICHER LES ERREURS EN ROUGE -->
+                <div th:if="${error}" class="card-panel red lighten-2">
+                    <h5 class="center red-text text-darken-2" th:text="${error}"></h5>
+                </div>
 
+                <!-- ✅ AFFICHER LES MESSAGES DE SUCCÈS EN VERT -->
+                <div th:if="${success}" class="card-panel green lighten-2">
+                    <h5 class="center green-text text-darken-2" th:text="${success}"></h5>
+                </div>
+
+                <form method="post" th:action="@{/register}">
+                    
+                    <!-- CHAMP 1 : Prénom -->
                     <div class="input-field">
-                        <label for="name">Name</label>
-                        <input type="text" class="class-controller"
-                               id="name" th:field="*{name}" required autofocus
+                        <label for="name">Prénom *</label>
+                        <input type="text" 
+                               class="class-controller"
+                               id="name" 
+                               name="name"
+                               th:value="${name}"
+                               required 
+                               autofocus
                         >
                     </div>
 
+                    <!-- CHAMP 2 : Nom -->
                     <div class="input-field">
-                        <label for="surname">Surname</label>
-                        <input type="text" class="class-controller"
-                               id="surname" th:field="*{surname}" required
+                        <label for="surname">Nom *</label>
+                        <input type="text" 
+                               class="class-controller"
+                               id="surname" 
+                               name="surname"
+                               th:value="${surname}"
+                               required
                         >
                     </div>
 
+                    <!-- CHAMP 3 : Email -->
                     <div class="input-field">
-                        <label for="email">Email</label>
-                        <input type="text" class="class-controller"
-                               id="email" th:field="*{email}" required
+                        <label for="email">Email *</label>
+                        <input type="email" 
+                               class="class-controller"
+                               id="email" 
+                               name="email"
+                               th:value="${email}"
+                               required
                         >
                     </div>
 
-                    <div class="file-field input-field">
-                        <div class="input-field">
-                            <label for="imgUrl">Profile Image URL</label>
-                            <input type="text" class="class-controller" id="imgUrl" th:field="*{imgUrl}" required>
-                        </div>
-                    </div>
-
+                    <!-- CHAMP 4 : Pseudo (OPTIONNEL) -->
                     <div class="input-field">
-                        <label for="username">UserName</label>
-                        <input type="text" class="class-controller"
-                               id="username" th:field="*{username}" required
+                        <label for="username">Pseudo (optionnel)</label>
+                        <input type="text" 
+                               class="class-controller"
+                               id="username" 
+                               name="username"
+                               th:value="${username}"
                         >
                     </div>
 
+                    <!-- CHAMP 5 : Avatar URL (OPTIONNEL) -->
+                    <div class="input-field">
+                        <label for="imgUrl">URL Avatar (optionnel)</label>
+                        <input type="url" 
+                               class="class-controller" 
+                               id="imgUrl" 
+                               name="imgUrl"
+                               th:value="${imgUrl}"
+                        >
+                    </div>
+
+                    <!-- CHAMP 6 : Mot de passe -->
                     <div class="input-field mb-5">
-                        <label for="password">Password</label>
-                        <input type="password" class="class-controller"
-                               id="password" th:field="*{password}" required
+                        <label for="password">Mot de passe *</label>
+                        <input type="password" 
+                               class="class-controller"
+                               id="password" 
+                               name="password"
+                               minlength="6"
+                               required
                         >
+                        <small style="color: #666;">Minimum 6 caractères</small>
                     </div>
 
-                    <button type="submit" class="btn right" id="submit">
-                        Sign Up
-                    </button>
+                    <!-- ✅ NOUVEAU : CHAMP 7 : Rôle (SELECT) -->
+                    <div class="input-field">
+                        <label for="role">Rôle *</label>
+                        <!-- ✅ SELECT avec 3 options -->
+                        <select id="role" name="role" required>
+                            <option value="" disabled selected>Choisir votre rôle</option>
+                            <option value="STUDENT" th:selected="${role == 'STUDENT'}">
+                                👨‍🎓 Étudiant (Student)
+                            </option>
+                            <option value="TEACHER" th:selected="${role == 'TEACHER'}">
+                                👨‍🏫 Enseignant (Teacher)
+                            </option>
+                            <option value="ADMIN" th:selected="${role == 'ADMIN'}">
+                                👑 Administrateur (Admin)
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- BOUTON SUBMIT -->
+                    <div class="center">
+                        <button type="submit" class="btn waves-effect waves-light teal" id="submit">
+                            S'inscrire
+                        </button>
+                    </div>
+
+                    <!-- LIEN VERS LOGIN -->
+                    <div class="mt-5 center">
+                        <span>Vous avez déjà un compte ? </span>
+                        <a th:href="@{/login}" class="teal-text">Se connecter</a>
+                    </div>
                 </form>
+
+                <p style="font-size: 0.8em; color: #999; margin-top: 20px; text-align: center;">
+                    * Champs obligatoires
+                </p>
             </div>
         </div>
     </div>
 </main>
+
 <br><br>
-<footer class="page-footer teal" th:insert="fragments/footer">
+<footer class="page-footer teal" th:insert="fragments/footer"></footer>
 
-</footer>
-
-<!--  Scripts-->
+<!-- ✅ SCRIPTS -->
 <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script src="/js/materialize.js"></script>
 <script src="/js/init.js"></script>
+
+<!-- ✅ INITIALISER LES SELECT MATERIALIZE -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialiser les select Materialize
+    var selects = document.querySelectorAll('select');
+    M.FormSelect.init(selects);
+});
+</script>
+
 </body>
 </html>
